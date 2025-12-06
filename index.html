@@ -86,10 +86,16 @@
         width: 110px;
         text-transform: uppercase;
         font-weight: bold;
+        padding: 8px;
+        border-radius: 8px;
+        border: 2px solid #ccc;
     }
 
     input.obs {
         width: 160px;
+        padding: 8px;
+        border-radius: 8px;
+        border: 2px solid #ccc;
     }
 
     .caixa-container {
@@ -161,9 +167,10 @@
 
     #botoesSE button.ativo {
         background-color: white !important;
-        color: #000 !important;
-        border: 1.5px solid #aaa !important;
-        box-shadow: inset 0 4px 8px rgba(0,0,0,0.3), 0 0 0 2px #ff0000 !important;
+        color: red !important;
+        border: none !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3) !important;
+        font-weight: bold;
     }
 
     .acoes-sessao {
@@ -298,8 +305,13 @@ function capturarEstadoSessao() {
     const linhas = Array.from(document.querySelectorAll("#tabelaDT tbody tr"));
     const dadosLinhas = linhas.map(linha => {
         const cols = linha.children;
+        
+        // Captura o endereço original (coordenadas)
+        let enderecoOriginal = cols[9].getAttribute('data-endereco') || cols[9].innerText;
+        
         return {
-            dados: Array.from(cols).slice(0, 10).map(td => td.innerText),
+            dados: Array.from(cols).slice(0, 9).map(td => td.innerText),
+            endereco: enderecoOriginal,
             codigo: cols[10].querySelector('input')?.value || '',
             obs: cols[11].querySelector('input')?.value || '',
             marcado: linha.classList.contains('marcado'),
@@ -368,11 +380,24 @@ function restaurarSessao(sessao) {
         const tr = document.createElement("tr");
         
         let htmlColunas = '';
-        item.dados.forEach((dado, idx) => {
+        item.dados.forEach((dado) => {
             htmlColunas += `<td>${dado}</td>`;
         });
+        
+        // Processa o endereço
+        let enderecoOriginal = item.endereco || "";
+        let enderecoHTML = enderecoOriginal;
+        if (enderecoOriginal && enderecoOriginal.includes(",")) {
+            let coords = enderecoOriginal.split(",");
+            if (coords.length === 2) {
+                let lat = coords[0].trim();
+                let lng = coords[1].trim();
+                enderecoHTML = `<button onclick="window.open('https://www.google.com/maps?q=${lat},${lng}', '_blank')">🗺️ Mapa</button>`;
+            }
+        }
 
         tr.innerHTML = htmlColunas + `
+            <td data-endereco="${enderecoOriginal}">${enderecoHTML}</td>
             <td><input maxlength="10" class="codigo" placeholder="Ex: INSERIR" value="${item.codigo}" oninput="salvarSessaoAutomatica()"></td>
             <td><input class="obs" placeholder="Obs" value="${item.obs}" oninput="salvarSessaoAutomatica()"></td>
             <td><button onclick="gerarMensagem(this)" ${item.gerado ? 'class="gerado"' : ''}>Gerar Msg</button></td>
@@ -606,6 +631,19 @@ function gerarMensagem(botao) {
     let obsInput = col[11].querySelector("input");
     let obs = obsInput ? obsInput.value : "";
 
+    // Pega o endereço original do atributo data-endereco
+    let enderecoTD = col[9];
+    let enderecoOriginal = enderecoTD.getAttribute('data-endereco') || "";
+    
+    // Se tem coordenadas, monta o link do Google Maps
+    let enderecoMensagem = enderecoOriginal;
+    if (enderecoOriginal && enderecoOriginal.includes(",")) {
+        let coords = enderecoOriginal.split(",");
+        if (coords.length === 2) {
+            enderecoMensagem = `https://www.google.com/maps?q=${coords[0].trim()},${coords[1].trim()}`;
+        }
+    }
+
     let msg =
 `*MODELO PARA ATENDER DT*
 
@@ -618,7 +656,7 @@ function gerarMensagem(botao) {
 *Base:* ${col[6].innerText}
 *CHI Total:* ${col[7].innerText}
 *Data última ocorrência:* ${col[8].innerText}
-*Endereço:* ${col[9].innerText}
+*Endereço:* ${enderecoMensagem}
 *DT / Incidência:* ${codigo}
 *Observação:* ${obs}`;
 
@@ -661,12 +699,17 @@ function preencherTabela(dados) {
     dados.forEach(item => {
         let tr = document.createElement("tr");
         
-        // Processa endereço para coordenadas (IGUAL AO ORIGINAL)
-        let enderecoHTML = item.ENDEREÇO || "";
-        if (enderecoHTML && enderecoHTML.includes(",")) {
-            let coords = enderecoHTML.split(",");
+        // Guarda o endereço original
+        let enderecoOriginal = item.ENDEREÇO || "";
+        let enderecoHTML = enderecoOriginal;
+        
+        // Se tem coordenadas, cria botão
+        if (enderecoOriginal && enderecoOriginal.includes(",")) {
+            let coords = enderecoOriginal.split(",");
             if (coords.length === 2) {
-                enderecoHTML = `<button onclick="window.open('https://www.google.com/maps?q=${coords[0].trim()},${coords[1].trim()}')">🗺️ Mapa</button>`;
+                let lat = coords[0].trim();
+                let lng = coords[1].trim();
+                enderecoHTML = `<button onclick="window.open('https://www.google.com/maps?q=${lat},${lng}', '_blank')">🗺️ Mapa</button>`;
             }
         }
 
@@ -680,7 +723,7 @@ function preencherTabela(dados) {
             <td>${item.BASE || ""}</td>
             <td>${item["CHI TOTAL"] || ""}</td>
             <td>${formatarData(item["DT. ULTIMA OCORRÊNCIA"] || "")}</td>
-            <td>${enderecoHTML}</td>
+            <td data-endereco="${enderecoOriginal}">${enderecoHTML}</td>
             <td><input maxlength="10" class="codigo" placeholder="Ex: INSERIR" oninput="salvarSessaoAutomatica()"></td>
             <td><input class="obs" placeholder="Obs" oninput="salvarSessaoAutomatica()"></td>
             <td><button onclick="gerarMensagem(this)">Gerar Msg</button></td>
@@ -693,6 +736,19 @@ function preencherTabela(dados) {
     preencherFiltros();
     aplicarFiltros();
     atualizarBotoesSE();
+}
+
+// ------------------------------
+// Converter coordenada → link Google Maps
+// ------------------------------
+function enderecoToMaps(txt) {
+    if (!txt) return "";
+    if (!txt.includes(",")) return txt;
+    let c = txt.split(",");
+    if (c.length === 2) {
+        return `<button onclick="window.open('https://www.google.com/maps?q=${c[0].trim()},${c[1].trim()}', '_blank')">🗺️ Mapa</button>`;
+    }
+    return txt;
 }
 
 // ------------------------------
