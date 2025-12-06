@@ -93,6 +93,29 @@
     width: 100%;
    }
 
+
+#botoesSE {
+    margin: 15px 0;
+    padding: 10px;
+    background: white;
+    border-radius: 6px;
+    border: 2px solid #aaa;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+   }
+
+#botoesSE button {
+    margin: 3px;
+    padding: 5px 10px;
+    border: none;
+    background: #004c97;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+   }
+
+#botoesSE button:hover {
+    background: #0065cc;
+   }
 </style>
 </head>
 <body>
@@ -121,6 +144,8 @@
     </div>
 
 </div>
+
+<div id="botoesSE"><b>CONTAGEM DE REITERADAS POR SE:</b><br></div>
 
 <table id="tabelaDT">
     <thead>
@@ -186,7 +211,11 @@ function aplicarFiltros() {
 
         linha.style.display = (condBase && condAlim) ? "" : "none";
     });
+
+    // Atualiza os botões SE após aplicar os filtros de base e alimentador
+    atualizarBotoesSE();
 }
+
 
 // ------------------------------
 // Quando mudar a BASE, atualiza os alimentadores disponíveis
@@ -367,24 +396,76 @@ function preencherTabela(dados) {
         tbody.appendChild(tr);
     });
 
-    // preencher filtro BASE
+    // Preencher filtro BASE
     let selectBase = document.getElementById("filtroBase");
     selectBase.innerHTML = `<option value="">Mostrar Todas</option>`;
     Array.from(valoresBase).sort((a,b)=> (a||'').localeCompare(b||'')).forEach(base => {
         if (base) selectBase.innerHTML += `<option value="${base}">${base}</option>`;
     });
 
-    // preencher filtro ALIM (todos inicialmente)
+    // Preencher filtro ALIM (todos inicialmente)
     let selectAlim = document.getElementById("filtroAlim");
     selectAlim.innerHTML = `<option value="">Mostrar Todos</option>`;
     Array.from(valoresAlim).sort((a,b)=> (a||'').localeCompare(b||'')).forEach(al => {
         selectAlim.innerHTML += `<option value="${al}">${al}</option>`;
     });
 
-    // aplicar filtros iniciais (nenhum selecionado => mostra todos)
+    // Aplicar filtros iniciais
     aplicarFiltros();
+
+    // Atualiza os botões "SE"
+    atualizarBotoesSE();
 }
 
+
+function atualizarBotoesSE() {
+    let botoesDiv = document.getElementById("botoesSE");
+    botoesDiv.innerHTML = "<b>Filtrar por SE:</b><br>";
+
+    // Pega todas as linhas visíveis na tabela
+    let linhas = document.querySelectorAll("#tabelaDT tbody tr");
+    let contagem = {};
+
+    // Conta os "SE" para as linhas visíveis
+    linhas.forEach(l => {
+        if (l.style.display !== "none") { // Só conta as linhas visíveis
+            let se = l.children[4].innerText.trim(); // Coluna SE
+            if (se) contagem[se] = (contagem[se] || 0) + 1;
+        }
+    });
+
+    // Ordena os SEs e cria os botões dinamicamente
+    Object.keys(contagem)
+        .sort() // Ordena alfabeticamente os SEs
+        .forEach(se => {
+            let btn = document.createElement("button");
+            btn.innerText = `${se} (${contagem[se]})`;
+            btn.onclick = () => filtrarPorSE(se); // Filtro por SE ao clicar
+            botoesDiv.appendChild(btn);
+        });
+}
+
+function filtrarPorSE(seSelecionado) {
+    let linhas = document.querySelectorAll("#tabelaDT tbody tr");
+
+    // Filtra as linhas com base no "SE" selecionado
+    linhas.forEach(linha => {
+        let se = linha.children[4].innerText.trim();
+        linha.style.display = (se === seSelecionado) ? "" : "none";
+    });
+
+    atualizarBotoesSE(); // Atualiza os botões após filtrar
+}
+function formatarData(data) {
+    // Verifica se a data é válida
+    if (!data) return "";
+    let date = new Date(data);
+    if (isNaN(date.getTime())) return ""; // Se a data for inválida, retorna vazio
+    let day = ("0" + date.getDate()).slice(-2); // Garante que o dia tenha dois dígitos
+    let month = ("0" + (date.getMonth() + 1)).slice(-2); // Garante que o mês tenha dois dígitos
+    let year = date.getFullYear(); // Ano de 4 dígitos
+    return `${day}/${month}/${year}`; // Retorna no formato "DD/MM/YYYY"
+}
 </script>
 
 </body>
