@@ -223,13 +223,13 @@
     <button class="btn-exportar" onclick="exportarSessao()">📥 Exportar Sessão</button>
     <button class="btn-importar" onclick="document.getElementById('importarSessao').click()">📤 Importar Sessão</button>
     <button class="btn-limpar-filtros" onclick="limparFiltros()">🔄 Limpar Filtros</button>
-    <button class="btn-limpar-tudo" onclick="limparTudo()">🗑️ Limpar Tudo</button>
+    <!-- <button class="btn-limpar-tudo" onclick="limparTudo()">🗑️ Limpar Tudo</button> -->
     <input type="file" id="importarSessao" accept=".json" style="display:none;" onchange="importarSessao(this)">
     <span class="status-salvamento" id="statusSalvamento"></span>
 </div>
 
 <div class="caixa-container">
-
+ 
     <div class="caixa">
         <b>Abrir planilha XLSX:</b><br>
         <input type="file" id="arquivoXLSX" accept=".xlsx">
@@ -840,3 +840,4 @@ function filtrarPorSE(seClicado, botaoClicado) {
 
 </body>
 </html>
+
