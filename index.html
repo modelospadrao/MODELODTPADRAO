@@ -5,16 +5,53 @@
 <title>DT - Filtro, Ordenação e WhatsApp</title>
 
 <style>
-    body { font-family: Arial, sans-serif; background: #eef1f5; padding: 20px; }
+    body { 
+        font-family: Arial, sans-serif; 
+        background: #eef1f5; 
+        padding: 20px;
+        margin: 0;
+    }
     h2 { margin-bottom: 10px; }
+
+    /* Container fixo para cabeçalho e filtros */
+    .header-container {
+        position: sticky;
+        top: 0;
+        background: #eef1f5;
+        z-index: 100;
+        padding-bottom: 10px;
+    }
+
+    /* Layout dos filtros em cascata */
+    .filtros-cascata {
+        display: flex;
+        gap: 10px;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: stretch;
+    }
+
+    /* Wrapper da tabela com scroll */
+    .table-wrapper {
+        max-height: calc(100vh - 300px);
+        overflow-y: auto;
+        overflow-x: auto;
+        border: 2px solid #333;
+        border-radius: 8px;
+        background: white;
+    }
 
     table {
         width: 100%;
         border-collapse: collapse;
         background: white;
-        margin-top: 15px;
-        border-radius: 6px;
-        overflow: hidden;
+    }
+
+    thead {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: #004c97;
     }
 
     th, td {
@@ -22,6 +59,7 @@
         text-align: left;
         border-bottom: 1px solid #ccc;
         font-size: 14px;
+        white-space: nowrap;
     }
 
     th {
@@ -68,8 +106,16 @@
     }
 
     button.gerado {
-        background-color: red !important;
+        background-color: green !important;
         box-shadow: 0 4px 12px rgba(0,0,0,0.5) !important;
+    }
+
+    button.realizado {
+        background-color: green !important;
+    }
+
+    button.nao-realizado {
+        background-color: red !important;
     }
 
     button.reset-btn {
@@ -82,7 +128,7 @@
         background: #fff0f0 !important;
     }
 
-    input.codigo {
+    input.codigo, input.lead, input.retorno {
         width: 110px;
         text-transform: uppercase;
         font-weight: bold;
@@ -91,102 +137,104 @@
         border: 2px solid #ccc;
     }
 
-    input.obs {
-        width: 160px;
+    input.obs, input.retorno {
+        width: 60px;
         padding: 8px;
         border-radius: 8px;
         border: 2px solid #ccc;
-    }
-
-    .caixa-container {
-        display: flex;
-        gap: 15px;
-        margin-bottom: 20px;
-        flex-wrap: wrap;
-    }
-
-    .caixa {
-        background: white;
-        padding: 12px;
-        min-width: 260px;
-        border-radius: 8px;
-        border: 2px solid #333;
-        box-shadow: 7px 6px 5px rgba(0,0,0,0.3);
-    }
-
-    .caixa select,
-    .caixa input {
-        width: 100%;
-        padding: 8px;
-        border: 2px solid #333;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-        background-color: white;
-        box-sizing: border-box;
-    }
-
-    .caixa select:focus,
-    .caixa input:focus {
-        outline: none;
-        border-color: #007bff;
-        box-shadow: 0 0 5px rgba(0,123,255,0.5);
-    }
-
-    #botoesSE {
-        margin: 15px 0;
-        padding: 13px;
-        background: white;
-        border-radius: 45px;
-        border: 3px solid #333;
-        box-shadow: 7px 6px 5px rgba(0,0,0,0.3);
+        cursor: pointer;
         text-align: center;
     }
 
-    #botoesSE button {
-        margin: 5px;
-        padding: 10px 20px;
-        border: none;
-        background-color: #444;
-        color: white;
-        border-radius: 25px;
+    .popup {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 20px;
+        background: rgba(0,0,0,0.95);
+        color: #fff;
+        font-size: 14px;
+        border-radius: 12px;
+        z-index: 10000;
+        box-shadow: 0 5px 30px rgba(0,0,0,0.5);
+        text-align: center;
+        max-width: 90%;
+        min-width: 400px;
+    }
+
+    .popup textarea {
+        width: 100%;
+        min-height: 100px;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 8px;
+        border: 2px solid #666;
+        background: #222;
+        color: #fff;
+        font-size: 14px;
+        resize: vertical;
+    }
+
+    .popup-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 15px;
+        flex-wrap: wrap;
+    }
+
+    .popup-buttons button {
+        padding: 10px 25px;
+        font-size: 13px;
+        border-radius: 6px;
         cursor: pointer;
-        font-size: 16px;
-        box-shadow: 0 10px 0 rgba(0,0,0,0.1);
-        transition: transform 0.2s, box-shadow 0.2s;
-        position: relative;
-    }
-
-    #botoesSE button:hover {
-        transform: scale(1.02);
-        box-shadow: 0 6px 8px rgba(0,0,0,0.15);
-    }
-
-    #botoesSE button:active {
-        transform: scale(0.98);
-    }
-
-    #botoesSE button.ativo {
-        background-color: white !important;
-        color: red !important;
-        border: none !important;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3) !important;
+        border: none;
         font-weight: bold;
     }
 
+    .popup .yes-button {
+        background: #4CAF50;
+        color: #fff;
+    }
+
+    .popup .no-button {
+        background: #f44336;
+        color: #fff;
+    }
+
+    .popup .close-button {
+        background: #666;
+        color: #fff;
+        margin-top: 10px;
+    }
+
+    .popup-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.7);
+        z-index: 9999;
+    }
+
     .acoes-sessao {
-        margin: 15px 0;
-        padding: 13px;
+        margin: 10px 0;
+        padding: 10px;
         background: white;
-        border-radius: 45px;
+        border-radius: 25px;
         border: 3px solid #333;
         box-shadow: 7px 6px 5px rgba(0,0,0,0.3);
         text-align: center;
     }
 
     .acoes-sessao button {
-        margin: 5px;
-        padding: 10px 20px;
-        font-size: 16px;
+        margin: 3px;
+        padding: 8px 15px;
+        font-size: 14px;
     }
 
     .btn-exportar {
@@ -206,133 +254,386 @@
         background-color: red !important;
     }
 
+    .btn-criar-rota {
+        background-color: #9C27B0 !important;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+
+
+    /* GRÁFICO DE CONTAGEM */
+    .grafico-container {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        border: 3px solid #333;
+        box-shadow: 7px 6px 5px rgba(0,0,0,0.3);
+        margin: 10px 0;
+    }
+
+    .grafico-titulo {
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        text-align: center;
+        color: #004c97;
+    }
+
+    .grafico-metricas {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 10px;
+    }
+
+    .metrica-item {
+        padding: 10px;
+        border-radius: 6px;
+        text-align: center;
+        border: 2px solid #ddd;
+    }
+
+    .metrica-numero {
+        font-size: 24px;
+        font-weight: bold;
+        display: block;
+    }
+
+    .metrica-label {
+        font-size: 12px;
+        color: #666;
+        margin-top: 5px;
+        display: block;
+    }
+
+    .metrica-total { background: #e3f2fd; border-color: #2196F3; }
+    .metrica-total .metrica-numero { color: #2196F3; }
+
+    .metrica-pendente { background: #fff3e0; border-color: #FF9800; }
+    .metrica-pendente .metrica-numero { color: #FF9800; }
+
+    .metrica-criada { background: #e8f5e9; border-color: #4CAF50; }
+    .metrica-criada .metrica-numero { color: #4CAF50; }
+
+    .metrica-realizado { background: #c8e6c9; border-color: #2E7D32; }
+    .metrica-realizado .metrica-numero { color: #2E7D32; }
+
+    .metrica-nao-realizado { background: #ffebee; border-color: #f44336; }
+    .metrica-nao-realizado .metrica-numero { color: #f44336; }
+
+    .metrica-reprogramar { background: #f5f5f5; border-color: #9E9E9E; }
+    .metrica-reprogramar .metrica-numero { color: #9E9E9E; }
+
+    .metrica-inspetor { background: #263238; border-color: #000; }
+    .metrica-inspetor .metrica-numero { color: #fff; }
+
+    button.reprogramar {
+        background-color: #9E9E9E !important;
+    }
+
+    button.enviar-inspetor {
+        background-color: #000 !important;
+        color: white !important;
+    }
+
     .status-salvamento {
         display: inline-block;
         margin-left: 10px;
         color: #28a745;
         font-size: 12px;
     }
+
+    /* FILTROS EM BOTÕES (BASE / SE / ALIM) */
+    #botoesBASE,
+    #botoesSE,
+    #botoesALIM {
+        background: #ffffff;
+        padding: 8px;
+        border-radius: 20px;
+        border: 3px solid #333;
+        box-shadow: 7px 6px 5px rgba(0,0,0,0.3);
+        text-align: center;
+        min-width: 200px;
+        max-width: 400px;
+        flex: 1;
+        position: relative;
+        min-height: 120px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    #botoesBASE b,
+    #botoesSE b,
+    #botoesALIM b {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 14px;
+    }
+
+    #botoesBASE > br,
+    #botoesSE > br,
+    #botoesALIM > br {
+        display: none;
+    }
+
+    .botoes-container {
+        flex: 1;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 3px;
+        align-content: flex-start;
+        justify-content: center;
+        padding-top: 25px;
+    }
+
+    /* Botões padrão */
+    #botoesBASE button,
+    #botoesSE button,
+    #botoesALIM button {
+        margin: 3px;
+        padding: 6px 10px;
+        border: none;
+        background-color: #444;
+        color: #fff;
+        border-radius: 18px;
+        cursor: pointer;
+        font-size: 12px;
+        box-shadow: 0 4px 0 rgba(0,0,0,0.1);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    /* Hover */
+    #botoesBASE button:hover,
+    #botoesSE button:hover,
+    #botoesALIM button:hover {
+        transform: scale(1.02);
+        box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+    }
+
+    /* Click */
+    #botoesBASE button:active,
+    #botoesSE button:active,
+    #botoesALIM button:active {
+        transform: scale(0.98);
+    }
+
+    /* Botão ativo */
+    #botoesBASE button.ativo,
+    #botoesSE button.ativo,
+    #botoesALIM button.ativo {
+        background-color: #ffffff !important;
+        color: red !important;
+        border: none !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3) !important;
+        font-weight: bold;
+    }
+
+    /* Botão limpar */
+    #botoesBASE button.limpar,
+    #botoesSE button.limpar,
+    #botoesALIM button.limpar {
+        background-color: #ff8c00 !important;
+        color: #000 !important;
+        font-weight: bold;
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        padding: 4px 10px;
+        font-size: 11px;
+        border-radius: 12px 12px 0 0;
+        margin: 0;
+    }
 </style>
 </head>
 <body>
 
-<h2>Lista de DT com Filtro + Ordenação + WhatsApp</h2>
-
-<div class="acoes-sessao">
-    <b>💾 Gerenciar Sessão:</b><br>
-    <button class="btn-exportar" onclick="exportarSessao()">📥 Exportar Sessão</button>
-    <button class="btn-importar" onclick="document.getElementById('importarSessao').click()">📤 Importar Sessão</button>
-    <button class="btn-limpar-filtros" onclick="limparFiltros()">🔄 Limpar Filtros</button>
-    <!-- <button class="btn-limpar-tudo" onclick="limparTudo()">🗑️ Limpar Tudo</button> -->
-    <input type="file" id="importarSessao" accept=".json" style="display:none;" onchange="importarSessao(this)">
-    <span class="status-salvamento" id="statusSalvamento"></span>
+<div id="popupOverlay" class="popup-overlay" onclick="fecharPopup()"></div>
+<div id="popupTexto" class="popup">
+    <h3 id="popupTitulo">Editar Texto</h3>
+    <textarea id="popupTextarea"></textarea>
+    <div class="popup-buttons">
+        <button class="yes-button" onclick="salvarPopup()">✔ Salvar</button>
+        <button class="close-button" onclick="fecharPopup()">✖ Fechar</button>
+    </div>
 </div>
 
-<div class="caixa-container">
- 
-    <div class="caixa">
-        <b>Abrir planilha XLSX:</b><br>
+<div class="header-container">
+    <h2>Lista de DT com Filtro + Ordenação + WhatsApp</h2>
+
+    <div class="acoes-sessao">
+        <b>💾 Gerenciar:</b>
+        <button class="btn-exportar" onclick="exportarSessao()">📥 Exportar</button>
+        <button class="btn-importar" onclick="document.getElementById('importarSessao').click()">📤 Importar</button>
+        <button class="btn-limpar-filtros" onclick="limparFiltros()">🔄 Limpar Filtros</button>
+        <button class="btn-criar-rota" id="btnCriarRota" onclick="criarRotaMapa()" style="display:none;">🗺️ Criar Rota no Mapa</button>
+        <input type="file" id="importarSessao" accept=".json" style="display:none;" onchange="importarSessao(this)">
+        <span class="status-salvamento" id="statusSalvamento"></span>
+        <b>📂 XLSX:</b>
         <input type="file" id="arquivoXLSX" accept=".xlsx">
     </div>
 
-    <div class="caixa">
-        <b>Filtrar pela BASE:</b><br>
-        <select id="filtroBase">
-            <option value="">Mostrar Todas</option>
-        </select>
-    </div>
+    <div class="filtros-cascata">
+        <div id="botoesBASE">
+            <b>BASE:</b>
+        </div>
 
-    <div class="caixa">
-        <b>Filtrar pelo ALIMENTADOR:</b><br>
-        <select id="filtroAlim">
-            <option value="">Mostrar Todos</option>
-        </select>
-    </div>
+        <div id="botoesSE" style="display:none;">
+            <b>SE:</b>
+        </div>
 
+        <div id="botoesALIM" style="display:none;">
+            <b>Alimentador:</b>
+        </div>
+    </div>
 </div>
 
-<div id="botoesSE"><b>Filtrar por SE:</b><br></div>
 
-<table id="tabelaDT">
-    <thead>
-        <tr>
-            <th onclick="ordenarTabela(0, this)">Ranking</th>
-            <th onclick="ordenarTabela(1, this)">Tipo Equipamento</th>
-            <th onclick="ordenarTabela(2, this)">Equipamento</th>
-            <th onclick="ordenarTabela(3, this)">Reiteradas</th>
-            <th onclick="ordenarTabela(4, this)">SE</th>
-            <th onclick="ordenarTabela(5, this)">Alimentador</th>
-            <th onclick="ordenarTabela(6, this)">Base</th>
-            <th onclick="ordenarTabela(7, this)">CHI Total</th>
-            <th onclick="ordenarTabela(8, this)">Data Últ. Ocorrência</th>
-            <th onclick="ordenarTabela(9, this)">Endereço</th>
-            <th onclick="ordenarTabela(10, this)">DT / Incidência</th>
-            <th>Observação</th>
-            <th>Ação</th>
-            <th>Reset</th>
-        </tr>
-    </thead>
-    <tbody></tbody>
-</table>
+<!-- GRÁFICO DE CONTAGEM -->
+    <div class="grafico-container">
+        <div class="grafico-titulo">📊 MÉTRICAS EM TEMPO REAL</div>
+        <div class="grafico-metricas">
+            <div class="metrica-item metrica-total">
+                <span class="metrica-numero" id="metricaTotal">0</span>
+                <span class="metrica-label">Total Filtrado</span>
+            </div>
+            <div class="metrica-item metrica-pendente">
+                <span class="metrica-numero" id="metricaPendente">0</span>
+                <span class="metrica-label">Pendentes (Criar DT)</span>
+            </div>
+            <div class="metrica-item metrica-criada">
+                <span class="metrica-numero" id="metricaCriada">0</span>
+                <span class="metrica-label">DTs Criadas</span>
+            </div>
+            <div class="metrica-item metrica-realizado">
+                <span class="metrica-numero" id="metricaRealizado">0</span>
+                <span class="metrica-label">Realizados</span>
+            </div>
+            <div class="metrica-item metrica-nao-realizado">
+                <span class="metrica-numero" id="metricaNaoRealizado">0</span>
+                <span class="metrica-label">Não Realizados</span>
+            </div>
+            <div class="metrica-item metrica-reprogramar">
+                <span class="metrica-numero" id="metricaReprogramar">0</span>
+                <span class="metrica-label">Reprogramar</span>
+            </div>
+            <div class="metrica-item metrica-inspetor">
+                <span class="metrica-numero" id="metricaInspetor">0</span>
+                <span class="metrica-label">Enviar Inspetor</span>
+            </div>
+        </div>
+    </div>
+
+<div class="table-wrapper">
+    <table id="tabelaDT">
+        <thead>
+            <tr>
+                <th onclick="ordenarTabela(0, this)">Ranking</th>
+                <th onclick="ordenarTabela(1, this)">Tipo</th>
+                <th onclick="ordenarTabela(2, this)">Equipamento</th>
+                <th onclick="ordenarTabela(3, this)">Reiteradas</th>
+                <th onclick="ordenarTabela(4, this)">SE</th>
+                <th onclick="ordenarTabela(5, this)">Alimentador</th>
+                <th onclick="ordenarTabela(6, this)">Base</th>
+                <th onclick="ordenarTabela(7, this)">CHI</th>
+                <th onclick="ordenarTabela(8, this)">Data</th>
+                <th onclick="ordenarTabela(9, this)">Endereço</th>
+                <th onclick="ordenarTabela(10, this)">DT / Inc</th>
+                <th onclick="ordenarTabela(11, this)">Observação</th>
+                <th onclick="ordenarTabela(12, this)">Lead da Equipe</th>
+                <th onclick="ordenarTabela(13, this)">Retorno</th>
+                <th onclick="ordenarTabela(14, this)">Ação</th>
+                <th onclick="ordenarTabela(15, this)">Status</th>
+                <th>Reset</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
 <script>
-// ------------------------------
 // VARIÁVEIS GLOBAIS
-// ------------------------------
 let ultimoTH = null;
 let lastSortedCol = null;
 let lastOrderAsc = null;
-let dadosOriginais = []; // Armazena os dados da planilha
+let dadosOriginais = [];
+let baseSelecionada = null;
+let seSelecionado = null;
+let alimentadorSelecionado = null;
+let inputAtualPopup = null;
 
-// ------------------------------
-// AUTO-SAVE: Salvar automaticamente no localStorage
-// ------------------------------
+// FUNÇÕES POPUP
+function abrirPopup(input, titulo) {
+    inputAtualPopup = input;
+    document.getElementById('popupTitulo').innerText = titulo;
+    document.getElementById('popupTextarea').value = input.value || '';
+    document.getElementById('popupOverlay').style.display = 'block';
+    document.getElementById('popupTexto').style.display = 'block';
+    document.getElementById('popupTextarea').focus();
+}
+
+function fecharPopup() {
+    document.getElementById('popupOverlay').style.display = 'none';
+    document.getElementById('popupTexto').style.display = 'none';
+    inputAtualPopup = null;
+}
+
+function salvarPopup() {
+    if (inputAtualPopup) {
+        inputAtualPopup.value = document.getElementById('popupTextarea').value;
+        salvarSessaoAutomatica();
+    }
+    fecharPopup();
+}
+
+// AUTO-SAVE
 function salvarSessaoAutomatica() {
     const sessao = capturarEstadoSessao();
     localStorage.setItem('dt_sessao_atual', JSON.stringify(sessao));
     
     const status = document.getElementById('statusSalvamento');
-    status.textContent = '✓ Salvo automaticamente';
+    status.textContent = '✔ Salvo automaticamente';
     setTimeout(() => status.textContent = '', 2000);
 }
 
-// ------------------------------
 // CAPTURAR ESTADO DA SESSÃO
-// ------------------------------
 function capturarEstadoSessao() {
     const linhas = Array.from(document.querySelectorAll("#tabelaDT tbody tr"));
     const dadosLinhas = linhas.map(linha => {
-        const cols = linha.children;
-        
-        // Captura o endereço original (coordenadas)
-        let enderecoOriginal = cols[9].getAttribute('data-endereco') || cols[9].innerText;
-        
-        return {
-            dados: Array.from(cols).slice(0, 9).map(td => td.innerText),
-            endereco: enderecoOriginal,
-            codigo: cols[10].querySelector('input')?.value || '',
-            obs: cols[11].querySelector('input')?.value || '',
-            marcado: linha.classList.contains('marcado'),
-            gerado: cols[12].querySelector('button')?.classList.contains('gerado') || false
-        };
-    });
+    const cols = linha.children;
+    
+    let enderecoOriginal = cols[9].getAttribute('data-endereco') || cols[9].innerText;
+    
+     return {
+        dados: Array.from(cols).slice(0, 9).map(td => td.innerText),
+        endereco: enderecoOriginal,
+        codigo: cols[10].querySelector('input')?.value || '',
+        obs: cols[11].querySelector('input')?.value || '',
+        lead: cols[12].querySelector('input')?.value || '',
+        retorno: cols[13].querySelector('input')?.value || '',
+        marcado: linha.classList.contains('marcado'),
+        gerado: cols[14].querySelector('button')?.classList.contains('gerado') || false,
+        statusClasse: cols[15].querySelector('button')?.className || 'nao-realizado',  // ← ADICIONE
+        statusTexto: cols[15].querySelector('button')?.innerText || 'Não Realizado'    // ← ADICIONE
+       };
+   });
 
     return {
         timestamp: new Date().toISOString(),
         dadosOriginais: dadosOriginais,
         dadosLinhas: dadosLinhas,
         filtros: {
-            base: document.getElementById('filtroBase').value,
-            alimentador: document.getElementById('filtroAlim').value
+            base: baseSelecionada,
+            se: seSelecionado,
+            alimentador: alimentadorSelecionado
         }
     };
 }
 
-// ------------------------------
-// EXPORTAR SESSÃO (DOWNLOAD)
-// ------------------------------
+// EXPORTAR SESSÃO
 function exportarSessao() {
     const sessao = capturarEstadoSessao();
     const blob = new Blob([JSON.stringify(sessao, null, 2)], {type: 'application/json'});
@@ -346,9 +647,7 @@ function exportarSessao() {
     alert('✅ Sessão exportada com sucesso!');
 }
 
-// ------------------------------
 // IMPORTAR SESSÃO
-// ------------------------------
 function importarSessao(input) {
     const arquivo = input.files[0];
     if (!arquivo) return;
@@ -364,12 +663,10 @@ function importarSessao(input) {
         }
     };
     reader.readAsText(arquivo);
-    input.value = ''; // Limpa o input
+    input.value = '';
 }
 
-// ------------------------------
 // RESTAURAR SESSÃO
-// ------------------------------
 function restaurarSessao(sessao) {
     dadosOriginais = sessao.dadosOriginais || [];
     
@@ -384,7 +681,6 @@ function restaurarSessao(sessao) {
             htmlColunas += `<td>${dado}</td>`;
         });
         
-        // Processa o endereço
         let enderecoOriginal = item.endereco || "";
         let enderecoHTML = enderecoOriginal;
         if (enderecoOriginal && enderecoOriginal.includes(",")) {
@@ -396,11 +692,23 @@ function restaurarSessao(sessao) {
             }
         }
 
+        const botaoTexto = item.gerado ? 'DT Criada' : 'Criar DT';
+        const statusTexto = item.statusTexto || 'Não Realizado';
+        const statusClasse = item.statusClasse || 'nao-realizado';
+
+        const codigoVal = (item.codigo && item.codigo !== 'undefined') ? item.codigo : '';
+        const obsVal = (item.obs && item.obs !== 'undefined') ? item.obs : '';
+        const leadVal = (item.lead && item.lead !== 'undefined') ? item.lead : '';
+        const retornoVal = (item.retorno && item.retorno !== 'undefined') ? item.retorno : '';
+
         tr.innerHTML = htmlColunas + `
             <td data-endereco="${enderecoOriginal}">${enderecoHTML}</td>
-            <td><input maxlength="10" class="codigo" placeholder="Ex: INSERIR" value="${item.codigo}" oninput="salvarSessaoAutomatica()"></td>
-            <td><input class="obs" placeholder="Obs" value="${item.obs}" oninput="salvarSessaoAutomatica()"></td>
-            <td><button onclick="gerarMensagem(this)" ${item.gerado ? 'class="gerado"' : ''}>Gerar Msg</button></td>
+            <td><input maxlength="10" class="codigo" placeholder="Ex: INSERIR" value="${codigoVal}" oninput="salvarSessaoAutomatica()"></td>
+            <td><input class="obs" placeholder="..." value="${obsVal}" readonly onclick="abrirPopup(this, 'Observação')"></td>
+            <td><input class="lead" placeholder="" value="${leadVal}" oninput="salvarSessaoAutomatica()"></td>
+            <td><input class="retorno" placeholder="..." value="${retornoVal}" readonly onclick="abrirPopup(this, 'Retorno')"></td>
+            <td><button onclick="gerarMensagem(this)" ${item.gerado ? 'class="gerado"' : ''}>${botaoTexto}</button></td>
+            <td><button class="${statusClasse}" onclick="toggleStatus(this)">${statusTexto}</button></td>
             <td><button class="reset-btn" onclick="resetarLinha(this)">↺</button></td>
         `;
 
@@ -408,19 +716,16 @@ function restaurarSessao(sessao) {
         tbody.appendChild(tr);
     });
 
-    // Restaurar filtros
-    preencherFiltros();
-    document.getElementById('filtroBase').value = sessao.filtros.base || '';
-    atualizarAlimentadoresPorBase();
-    document.getElementById('filtroAlim').value = sessao.filtros.alimentador || '';
+    baseSelecionada = sessao.filtros.base;
+    seSelecionado = sessao.filtros.se;
+    alimentadorSelecionado = sessao.filtros.alimentador;
     
+    atualizarBotoesBASE();
     aplicarFiltros();
-    atualizarBotoesSE();
+    verificarBotaoRota();
 }
 
-// ------------------------------
-// CARREGAR SESSÃO AUTOMATICAMENTE AO ABRIR
-// ------------------------------
+// CARREGAR SESSÃO AO ABRIR
 window.addEventListener('DOMContentLoaded', function() {
     const sessaoSalva = localStorage.getItem('dt_sessao_atual');
     if (sessaoSalva) {
@@ -434,68 +739,130 @@ window.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// ------------------------------
 // LIMPAR APENAS OS FILTROS
-// ------------------------------
 function limparFiltros() {
-    document.getElementById('filtroBase').value = '';
-    document.getElementById('filtroAlim').value = '';
-    seSelecionado = null; // Limpa o filtro de SE também
-    atualizarAlimentadoresPorBase();
+    baseSelecionada = null;
+    seSelecionado = null;
+    alimentadorSelecionado = null;
+    
+    atualizarBotoesBASE();
     aplicarFiltros();
     
     const status = document.getElementById('statusSalvamento');
-    status.textContent = '✓ Filtros limpos!';
+    status.textContent = '✔ Filtros limpos!';
     status.style.color = '#667eea';
     setTimeout(() => status.textContent = '', 2000);
 }
 
-// ------------------------------
-// LIMPAR TUDO (resetar página)
-// ------------------------------
-function limparTudo() {
-    if (confirm('⚠️ Isso vai limpar TUDO (planilha, filtros e dados salvos). Deseja continuar?')) {
-        localStorage.removeItem('dt_sessao_atual');
-        location.reload();
-    }
-}
-
-// ------------------------------
-// RESETAR LINHA (desfaz marcação)
-// ------------------------------
+// RESETAR LINHA
 function resetarLinha(botaoReset) {
     const linha = botaoReset.parentNode.parentNode;
-    const botaoGerar = linha.querySelector('td:nth-child(13) button');
+    const botaoGerar = linha.querySelector('td:nth-child(15) button');
+    const botaoStatus = linha.querySelector('td:nth-child(16) button');
     
     linha.classList.remove('marcado');
     botaoGerar.classList.remove('gerado');
+    botaoGerar.innerText = 'Criar DT';
+    
+    botaoStatus.classList.remove('realizado');
+    botaoStatus.classList.add('nao-realizado');
+    botaoStatus.innerText = 'Não Realizado';
     
     salvarSessaoAutomatica();
+    atualizarGrafico();
 }
 
-// ------------------------------
+// TOGGLE STATUS (4 ESTADOS ROTATIVOS)
+function toggleStatus(botao) {
+    // Estados: Não Realizado → Realizado → Reprogramar → Enviar Inspetor → Não Realizado
+    if (botao.classList.contains('nao-realizado')) {
+        botao.classList.remove('nao-realizado');
+        botao.classList.add('realizado');
+        botao.innerText = 'Realizado';
+    } else if (botao.classList.contains('realizado')) {
+        botao.classList.remove('realizado');
+        botao.classList.add('reprogramar');
+        botao.innerText = 'Reprogramar';
+    } else if (botao.classList.contains('reprogramar')) {
+        botao.classList.remove('reprogramar');
+        botao.classList.add('enviar-inspetor');
+        botao.innerText = 'Enviar Inspetor';
+    } else if (botao.classList.contains('enviar-inspetor')) {
+        botao.classList.remove('enviar-inspetor');
+        botao.classList.add('nao-realizado');
+        botao.innerText = 'Não Realizado';
+    }
+    salvarSessaoAutomatica();
+    verificarBotaoRota();
+    atualizarGrafico();
+}
+
+
+// ATUALIZAR GRÁFICO
+function atualizarGrafico() {
+    const linhas = document.querySelectorAll("#tabelaDT tbody tr");
+    
+    let total = 0;
+    let pendente = 0;
+    let criada = 0;
+    let realizado = 0;
+    let naoRealizado = 0;
+    let reprogramar = 0;
+    let inspetor = 0;
+
+    linhas.forEach(linha => {
+        if (linha.style.display !== "none") {
+            total++;
+            
+            const botaoAcao = linha.querySelector('td:nth-child(15) button');
+            if (botaoAcao) {
+                if (botaoAcao.classList.contains('gerado')) {
+                    criada++;
+                } else {
+                    pendente++;
+                }
+            }
+            
+            const botaoStatus = linha.querySelector('td:nth-child(16) button');
+            if (botaoStatus) {
+                if (botaoStatus.classList.contains('realizado')) {
+                    realizado++;
+                } else if (botaoStatus.classList.contains('reprogramar')) {
+                    reprogramar++;
+                } else if (botaoStatus.classList.contains('enviar-inspetor')) {
+                    inspetor++;
+                } else {
+                    naoRealizado++;
+                }
+            }
+        }
+    });
+
+    document.getElementById('metricaTotal').textContent = total;
+    document.getElementById('metricaPendente').textContent = pendente;
+    document.getElementById('metricaCriada').textContent = criada;
+    document.getElementById('metricaRealizado').textContent = realizado;
+    document.getElementById('metricaNaoRealizado').textContent = naoRealizado;
+    document.getElementById('metricaReprogramar').textContent = reprogramar;
+    document.getElementById('metricaInspetor').textContent = inspetor;
+}
+
 // Destacar TH selecionado
-// ------------------------------
 function destacarTH(th) {
     if (ultimoTH) ultimoTH.classList.remove("selected");
     if (th) th.classList.add("selected");
     ultimoTH = th;
 }
 
-// ------------------------------
-// Converter data serial do Excel para DD/MM/AAAA
-// ------------------------------
+// Converter data serial do Excel
 function formatarData(valor) {
     if (!valor) return "";
     
-    // Se já está em formato de texto (DD/MM/AAAA), retorna
     if (typeof valor === 'string' && valor.includes('/')) {
         return valor;
     }
     
-    // Se é número serial do Excel
     if (typeof valor === 'number') {
-        // Excel serializa datas como dias desde 30/12/1899
         const dataExcel = new Date((valor - 25569) * 86400 * 1000);
         const dia = String(dataExcel.getDate()).padStart(2, '0');
         const mes = String(dataExcel.getMonth() + 1).padStart(2, '0');
@@ -503,7 +870,6 @@ function formatarData(valor) {
         return `${dia}/${mes}/${ano}`;
     }
     
-    // Tenta converter outros formatos
     try {
         const data = new Date(valor);
         if (!isNaN(data.getTime())) {
@@ -519,61 +885,284 @@ function formatarData(valor) {
     return valor;
 }
 
-// ------------------------------
-// FILTROS (BASE + ALIMENTADOR)
-// ------------------------------
+// APLICAR FILTROS
 function aplicarFiltros() {
-    const filtroBase = document.getElementById("filtroBase").value.toUpperCase();
-    const filtroAlim = document.getElementById("filtroAlim").value.toUpperCase();
     const linhas = document.querySelectorAll("#tabelaDT tbody tr");
 
     linhas.forEach(linha => {
-        const base = (linha.children[6].innerText || "").toUpperCase();
-        const alim = (linha.children[5].innerText || "").toUpperCase();
+        const base = (linha.children[6].innerText || "").trim();
+        const se = (linha.children[4].innerText || "").trim();
+        const alim = (linha.children[5].innerText || "").trim();
 
-        const condBase = (filtroBase === "" || base === filtroBase);
-        const condAlim = (filtroAlim === "" || alim === filtroAlim);
+        const condBase = !baseSelecionada || base === baseSelecionada;
+        const condSE = !seSelecionado || se === seSelecionado;
+        const condAlim = !alimentadorSelecionado || alim === alimentadorSelecionado;
 
-        linha.style.display = (condBase && condAlim) ? "" : "none";
+        linha.style.display = (condBase && condSE && condAlim) ? "" : "none";
     });
 
-    atualizarBotoesSE();
+    verificarBotaoRota();
+    atualizarGrafico();
 }
 
-// ------------------------------
-// Atualizar alimentadores quando BASE muda
-// ------------------------------
-function atualizarAlimentadoresPorBase() {
-    const baseSelecionada = document.getElementById("filtroBase").value;
-    const selectAlim = document.getElementById("filtroAlim");
+// VERIFICAR SE DEVE MOSTRAR BOTÃO DE ROTA
+function verificarBotaoRota() {
+    const linhas = document.querySelectorAll("#tabelaDT tbody tr");
+    let temDTCriada = false;
 
-    const rows = Array.from(document.querySelectorAll("#tabelaDT tbody tr"));
-    const alimentadores = new Set();
-
-    rows.forEach(r => {
-        const base = (r.children[6].innerText || "").trim();
-        const alim = (r.children[5].innerText || "").trim();
-        if (!baseSelecionada || base === baseSelecionada) {
-            if (alim) alimentadores.add(alim);
+    linhas.forEach(linha => {
+        if (linha.style.display !== "none") {
+            const botaoAcao = linha.querySelector('td:nth-child(15) button');
+            if (botaoAcao && botaoAcao.classList.contains('gerado')) {
+                temDTCriada = true;
+            }
         }
     });
 
-    selectAlim.innerHTML = `<option value="">Mostrar Todos</option>`;
-    Array.from(alimentadores).sort((a,b)=>a.localeCompare(b)).forEach(a => {
-        selectAlim.innerHTML += `<option value="${a}">${a}</option>`;
-    });
+    const btnRota = document.getElementById('btnCriarRota');
+    btnRota.style.display = temDTCriada ? 'inline-block' : 'none';
 }
 
-document.getElementById("filtroBase").addEventListener("change", function() {
-    atualizarAlimentadoresPorBase();
-    aplicarFiltros();
-});
+// CRIAR ROTA NO MAPA
+function criarRotaMapa() {
+    const linhas = document.querySelectorAll("#tabelaDT tbody tr");
+    const coordenadas = [];
 
-document.getElementById("filtroAlim").addEventListener("change", aplicarFiltros);
+    linhas.forEach(linha => {
+        if (linha.style.display !== "none") {
+            const botaoAcao = linha.querySelector('td:nth-child(15) button');
+            if (botaoAcao && botaoAcao.classList.contains('gerado')) {
+                const enderecoTD = linha.querySelector('td:nth-child(10)');
+                const endereco = enderecoTD.getAttribute('data-endereco');
+                
+                if (endereco && endereco.includes(',')) {
+                    coordenadas.push({
+                        coordenada: endereco.trim(),
+                        equipamento: linha.children[2].innerText,
+                        ranking: linha.children[0].innerText
+                    });
+                }
+            }
+        }
+    });
 
-// ------------------------------
+    if (coordenadas.length === 0) {
+        alert('❌ Nenhum item com "DT Criada" encontrado no filtro atual!');
+        return;
+    }
+
+    if (coordenadas.length === 1) {
+        // Se só tem 1 ponto, abre direto
+        window.open(`https://www.google.com/maps?q=${coordenadas[0].coordenada}`, '_blank');
+        return;
+    }
+
+    // Monta URL da rota no Google Maps
+    // Origem: primeiro ponto
+    const origem = coordenadas[0].coordenada;
+    
+    // Destino: último ponto
+    const destino = coordenadas[coordenadas.length - 1].coordenada;
+    
+    // Waypoints: pontos intermediários (máximo 9 waypoints no Google Maps)
+    let waypoints = [];
+    for (let i = 1; i < coordenadas.length - 1 && waypoints.length < 9; i++) {
+        waypoints.push(coordenadas[i].coordenada);
+    }
+
+    let url = `https://www.google.com/maps/dir/?api=1&origin=${origem}&destination=${destino}`;
+    
+    if (waypoints.length > 0) {
+        url += `&waypoints=${waypoints.join('|')}`;
+    }
+
+    url += '&travelmode=driving';
+
+    // Mostra resumo
+    const resumo = `
+🗺️ ROTA CRIADA COM SUCESSO!
+
+📍 Total de pontos: ${coordenadas.length}
+${coordenadas.length > 11 ? '\n⚠️ Atenção: Google Maps limita a 10 paradas intermediárias.\nApenas os primeiros 11 pontos serão incluídos na rota.' : ''}
+
+🚗 Abrindo rota no Google Maps...
+
+Lista de equipamentos na rota:
+${coordenadas.slice(0, 11).map((c, i) => `${i + 1}. ${c.equipamento} (Ranking: ${c.ranking})`).join('\n')}
+    `.trim();
+
+    alert(resumo);
+    window.open(url, '_blank');
+}
+
+// ATUALIZAR BOTÕES BASE
+function atualizarBotoesBASE() {
+    let divBASE = document.getElementById("botoesBASE");
+    let divSE = document.getElementById("botoesSE");
+    let divALIM = document.getElementById("botoesALIM");
+    
+    divBASE.innerHTML = "<b>BASE:</b>";
+    
+    let containerBotoes = document.createElement('div');
+    containerBotoes.className = 'botoes-container';
+    
+    if (baseSelecionada) {
+        let btnLimpar = document.createElement("button");
+        btnLimpar.innerText = "✖";
+        btnLimpar.className = "limpar";
+        btnLimpar.title = "Limpar BASE";
+        btnLimpar.onclick = () => {
+            baseSelecionada = null;
+            seSelecionado = null;
+            alimentadorSelecionado = null;
+            atualizarBotoesBASE();
+            aplicarFiltros();
+            atualizarGrafico();
+        };
+        divBASE.appendChild(btnLimpar);
+    }
+
+    let linhas = document.querySelectorAll("#tabelaDT tbody tr");
+    let contagemBase = {};
+
+    linhas.forEach(l => {
+        let base = l.children[6].innerText.trim();
+        if (base) contagemBase[base] = (contagemBase[base] || 0) + 1;
+    });
+
+    Object.keys(contagemBase).sort().forEach(base => {
+        let btn = document.createElement("button");
+        btn.innerText = `${base} (${contagemBase[base]})`;
+        btn.onclick = () => {
+            baseSelecionada = base;
+            seSelecionado = null;
+            alimentadorSelecionado = null;
+            atualizarBotoesBASE();
+            atualizarBotoesSE();
+            aplicarFiltros();
+        };
+        if (baseSelecionada === base) btn.classList.add('ativo');
+        containerBotoes.appendChild(btn);
+    });
+
+    divBASE.appendChild(containerBotoes);
+
+    if (baseSelecionada) {
+        divSE.style.display = 'flex';
+        atualizarBotoesSE();
+    } else {
+        divSE.style.display = 'none';
+        divALIM.style.display = 'none';
+    }
+}
+
+// ATUALIZAR BOTÕES SE
+function atualizarBotoesSE() {
+    let divSE = document.getElementById("botoesSE");
+    let divALIM = document.getElementById("botoesALIM");
+    
+    divSE.innerHTML = "<b>SE:</b>";
+    
+    let containerBotoes = document.createElement('div');
+    containerBotoes.className = 'botoes-container';
+    
+    if (seSelecionado) {
+        let btnLimpar = document.createElement("button");
+        btnLimpar.innerText = "✖";
+        btnLimpar.className = "limpar";
+        btnLimpar.title = "Limpar SE";
+        btnLimpar.onclick = () => {
+            seSelecionado = null;
+            alimentadorSelecionado = null;
+            atualizarBotoesSE();
+            aplicarFiltros();
+        };
+        divSE.appendChild(btnLimpar);
+    }
+
+    let linhas = document.querySelectorAll("#tabelaDT tbody tr");
+    let contagemSE = {};
+
+    linhas.forEach(l => {
+        let base = l.children[6].innerText.trim();
+        let se = l.children[4].innerText.trim();
+        if (base === baseSelecionada && se) {
+            contagemSE[se] = (contagemSE[se] || 0) + 1;
+        }
+    });
+
+    Object.keys(contagemSE).sort().forEach(se => {
+        let btn = document.createElement("button");
+        btn.innerText = `${se} (${contagemSE[se]})`;
+        btn.onclick = () => {
+            seSelecionado = se;
+            alimentadorSelecionado = null;
+            atualizarBotoesSE();
+            atualizarBotoesALIM();
+            aplicarFiltros();
+        };
+        if (seSelecionado === se) btn.classList.add('ativo');
+        containerBotoes.appendChild(btn);
+    });
+
+    divSE.appendChild(containerBotoes);
+
+    if (seSelecionado) {
+        divALIM.style.display = 'flex';
+        atualizarBotoesALIM();
+    } else {
+        divALIM.style.display = 'none';
+    }
+}
+
+// ATUALIZAR BOTÕES ALIMENTADOR
+function atualizarBotoesALIM() {
+    let divALIM = document.getElementById("botoesALIM");
+    divALIM.innerHTML = "<b>Alimentador:</b>";
+    
+    let containerBotoes = document.createElement('div');
+    containerBotoes.className = 'botoes-container';
+    
+    if (alimentadorSelecionado) {
+        let btnLimpar = document.createElement("button");
+        btnLimpar.innerText = "✖";
+        btnLimpar.className = "limpar";
+        btnLimpar.title = "Limpar Alimentador";
+        btnLimpar.onclick = () => {
+            alimentadorSelecionado = null;
+            atualizarBotoesALIM();
+            aplicarFiltros();
+        };
+        divALIM.appendChild(btnLimpar);
+    }
+
+    let linhas = document.querySelectorAll("#tabelaDT tbody tr");
+    let contagemAlim = {};
+
+    linhas.forEach(l => {
+        let se = l.children[4].innerText.trim();
+        let alim = l.children[5].innerText.trim();
+        if (se === seSelecionado && alim) {
+            contagemAlim[alim] = (contagemAlim[alim] || 0) + 1;
+        }
+    });
+
+    Object.keys(contagemAlim).sort().forEach(alim => {
+        let btn = document.createElement("button");
+        btn.innerText = `${alim} (${contagemAlim[alim]})`;
+        btn.onclick = () => {
+            alimentadorSelecionado = alim;
+            atualizarBotoesALIM();
+            aplicarFiltros();
+        };
+        if (alimentadorSelecionado === alim) btn.classList.add('ativo');
+        containerBotoes.appendChild(btn);
+    });
+
+    divALIM.appendChild(containerBotoes);
+}
+
 // ORDENAR TABELA
-// ------------------------------
 function isNumericString(s) {
     if (!s) return false;
     const cleaned = String(s).trim().replace(/\./g,'').replace(/,/g,'.').replace(/[^\d\.\-]/g,'');
@@ -588,7 +1177,13 @@ function ordenarTabela(coluna, thElement) {
     const todas = Array.from(tbody.querySelectorAll("tr"));
     const visiveis = todas.filter(r => r.style.display !== "none");
 
-    const sample = visiveis.map(r => r.children[coluna].innerText.trim()).filter(v => v !== "");
+    const sample = visiveis.map(r => {
+        let cell = r.children[coluna];
+        let input = cell.querySelector('input');
+        let btn = cell.querySelector('button');
+        return input ? input.value.trim() : (btn ? btn.innerText.trim() : cell.innerText.trim());
+    }).filter(v => v !== "");
+
     const numericCount = sample.filter(v => isNumericString(v)).length;
     const isNumeric = sample.length > 0 && numericCount >= Math.ceil(sample.length * 0.6);
 
@@ -600,8 +1195,16 @@ function ordenarTabela(coluna, thElement) {
     }
 
     visiveis.sort((a,b) => {
-        let va = a.children[coluna].innerText.trim();
-        let vb = b.children[coluna].innerText.trim();
+        let cellA = a.children[coluna];
+        let cellB = b.children[coluna];
+        
+        let inputA = cellA.querySelector('input');
+        let inputB = cellB.querySelector('input');
+        let btnA = cellA.querySelector('button');
+        let btnB = cellB.querySelector('button');
+        
+        let va = inputA ? inputA.value.trim() : (btnA ? btnA.innerText.trim() : cellA.innerText.trim());
+        let vb = inputB ? inputB.value.trim() : (btnB ? btnB.innerText.trim() : cellB.innerText.trim());
 
         if (isNumeric && isNumericString(va) && isNumericString(vb)) {
             const na = Number(va.replace(/\./g,'').replace(/,/g,'.').replace(/[^\d\.\-]/g,''))||0;
@@ -618,9 +1221,7 @@ function ordenarTabela(coluna, thElement) {
     visiveis.forEach(r => tbody.appendChild(r));
 }
 
-// ------------------------------
 // GERAR MENSAGEM
-// ------------------------------
 function gerarMensagem(botao) {
     let linha = botao.parentNode.parentNode;
     let col = linha.getElementsByTagName("td");
@@ -631,11 +1232,12 @@ function gerarMensagem(botao) {
     let obsInput = col[11].querySelector("input");
     let obs = obsInput ? obsInput.value : "";
 
-    // Pega o endereço original do atributo data-endereco
+    let leadInput = col[12].querySelector("input");
+    let lead = leadInput ? leadInput.value : "";
+
     let enderecoTD = col[9];
     let enderecoOriginal = enderecoTD.getAttribute('data-endereco') || "";
     
-    // Se tem coordenadas, monta o link do Google Maps
     let enderecoMensagem = enderecoOriginal;
     if (enderecoOriginal && enderecoOriginal.includes(",")) {
         let coords = enderecoOriginal.split(",");
@@ -658,19 +1260,21 @@ function gerarMensagem(botao) {
 *Data última ocorrência:* ${col[8].innerText}
 *Endereço:* ${enderecoMensagem}
 *DT / Incidência:* ${codigo}
-*Observação:* ${obs}`;
+*Observação:* ${obs}
+*Lead da Equipe:* ${lead}`;
 
     navigator.clipboard.writeText(msg);
 
     linha.classList.add("marcado");
     botao.classList.add("gerado");
+    botao.innerText = "DT Criada";
     
     salvarSessaoAutomatica();
+    verificarBotaoRota();
+    atualizarGrafico();
 }
 
-// ------------------------------
 // CARREGAR XLSX
-// ------------------------------
 document.getElementById("arquivoXLSX").addEventListener("change", function(e) {
     let arquivo = e.target.files[0];
     let reader = new FileReader();
@@ -689,9 +1293,7 @@ document.getElementById("arquivoXLSX").addEventListener("change", function(e) {
     reader.readAsArrayBuffer(arquivo);
 });
 
-// ------------------------------
 // POPULAR TABELA
-// ------------------------------
 function preencherTabela(dados) {
     let tbody = document.querySelector("#tabelaDT tbody");
     tbody.innerHTML = "";
@@ -699,11 +1301,9 @@ function preencherTabela(dados) {
     dados.forEach(item => {
         let tr = document.createElement("tr");
         
-        // Guarda o endereço original
         let enderecoOriginal = item.ENDEREÇO || "";
         let enderecoHTML = enderecoOriginal;
         
-        // Se tem coordenadas, cria botão
         if (enderecoOriginal && enderecoOriginal.includes(",")) {
             let coords = enderecoOriginal.split(",");
             if (coords.length === 2) {
@@ -725,119 +1325,21 @@ function preencherTabela(dados) {
             <td>${formatarData(item["DT. ULTIMA OCORRÊNCIA"] || "")}</td>
             <td data-endereco="${enderecoOriginal}">${enderecoHTML}</td>
             <td><input maxlength="10" class="codigo" placeholder="Ex: INSERIR" oninput="salvarSessaoAutomatica()"></td>
-            <td><input class="obs" placeholder="Obs" oninput="salvarSessaoAutomatica()"></td>
-            <td><button onclick="gerarMensagem(this)">Gerar Msg</button></td>
+            <td><input class="obs" placeholder="..." readonly onclick="abrirPopup(this, 'Observação')"></td>
+            <td><input class="lead" placeholder="" oninput="salvarSessaoAutomatica()"></td>
+            <td><input class="retorno" placeholder="..." readonly onclick="abrirPopup(this, 'Retorno')"></td>
+            <td><button onclick="gerarMensagem(this)">Criar DT</button></td>
+            <td><button class="nao-realizado" onclick="toggleStatus(this)">Não Realizado</button></td>
             <td><button class="reset-btn" onclick="resetarLinha(this)">↺</button></td>
         `;
 
         tbody.appendChild(tr);
     });
 
-    preencherFiltros();
+    atualizarBotoesBASE();
     aplicarFiltros();
-    atualizarBotoesSE();
-}
-
-// ------------------------------
-// Converter coordenada → link Google Maps
-// ------------------------------
-function enderecoToMaps(txt) {
-    if (!txt) return "";
-    if (!txt.includes(",")) return txt;
-    let c = txt.split(",");
-    if (c.length === 2) {
-        return `<button onclick="window.open('https://www.google.com/maps?q=${c[0].trim()},${c[1].trim()}', '_blank')">🗺️ Mapa</button>`;
-    }
-    return txt;
-}
-
-// ------------------------------
-// PREENCHER FILTROS
-// ------------------------------
-function preencherFiltros() {
-    const rows = Array.from(document.querySelectorAll("#tabelaDT tbody tr"));
-    let valoresBase = new Set();
-    let valoresAlim = new Set();
-
-    rows.forEach(r => {
-        valoresBase.add(r.children[6].innerText.trim());
-        valoresAlim.add(r.children[5].innerText.trim());
-    });
-
-    let selectBase = document.getElementById("filtroBase");
-    const baseAtual = selectBase.value;
-    selectBase.innerHTML = `<option value="">Mostrar Todas</option>`;
-    Array.from(valoresBase).sort((a,b)=> (a||'').localeCompare(b||'')).forEach(base => {
-        if (base) selectBase.innerHTML += `<option value="${base}">${base}</option>`;
-    });
-    selectBase.value = baseAtual;
-
-    let selectAlim = document.getElementById("filtroAlim");
-    const alimAtual = selectAlim.value;
-    selectAlim.innerHTML = `<option value="">Mostrar Todos</option>`;
-    Array.from(valoresAlim).sort((a,b)=> (a||'').localeCompare(b||'')).forEach(al => {
-        if (al) selectAlim.innerHTML += `<option value="${al}">${al}</option>`;
-    });
-    selectAlim.value = alimAtual;
-}
-
-// ------------------------------
-// ATUALIZAR BOTÕES SE
-// ------------------------------
-let seSelecionado = null; // Armazena qual SE está selecionado
-
-function atualizarBotoesSE() {
-    let botoesDiv = document.getElementById("botoesSE");
-    botoesDiv.innerHTML = "<b>Filtrar por SE:</b><br>";
-
-    let linhas = document.querySelectorAll("#tabelaDT tbody tr");
-    let contagem = {};
-
-    linhas.forEach(l => {
-        if (l.style.display !== "none") {
-            let se = l.children[4].innerText.trim();
-            if (se) contagem[se] = (contagem[se] || 0) + 1;
-        }
-    });
-
-    Object.keys(contagem)
-        .sort()
-        .forEach(se => {
-            let btn = document.createElement("button");
-            btn.innerText = `${se} (${contagem[se]})`;
-            btn.onclick = () => filtrarPorSE(se, btn);
-            
-            // Mantém o botão ativo se for o SE selecionado
-            if (seSelecionado === se) {
-                btn.classList.add('ativo');
-            }
-            
-            botoesDiv.appendChild(btn);
-        });
-}
-
-function filtrarPorSE(seClicado, botaoClicado) {
-    let linhas = document.querySelectorAll("#tabelaDT tbody tr");
-
-    // Se clicar no mesmo SE, desativa o filtro
-    if (seSelecionado === seClicado) {
-        seSelecionado = null;
-        linhas.forEach(linha => {
-            linha.style.display = "";
-        });
-    } else {
-        // Ativa o filtro do SE clicado
-        seSelecionado = seClicado;
-        linhas.forEach(linha => {
-            let se = linha.children[4].innerText.trim();
-            linha.style.display = (se === seClicado) ? "" : "none";
-        });
-    }
-
-    atualizarBotoesSE();
 }
 </script>
 
 </body>
 </html>
-
