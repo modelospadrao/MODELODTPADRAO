@@ -583,9 +583,281 @@
         overflow: hidden;
         text-overflow: ellipsis;
     }
+    /* Pop-up para TalkBack */
+    #talkback-popup {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 20px 30px;
+        background-color: rgba(0,0,0,0.95);
+        color: white;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 12px;
+        z-index: 11000;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+        text-align: center;
+        min-width: 300px;
+        animation: popupFade 0.3s ease;
+    }
+
+    @keyframes popupFade {
+        from {
+            opacity: 0;
+            transform: translate(-50%, -60%);
+        }
+        to {
+            opacity: 1;
+            transform: translate(-50%, -50%);
+        }
+    }
+
+    #talkback-popup.success {
+        border-left: 4px solid #4CAF50;
+    }
+
+    #talkback-popup.error {
+        border-left: 4px solid #f44336;
+    }
+
+    #talkback-popup.info {
+        border-left: 4px solid #2196F3;
+    }
+    /* Popup de Confirmação de Rota */
+    #popup-rota {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 0;
+        background: #1a1a1a;
+        color: #fff;
+        border-radius: 16px;
+        z-index: 10500;
+        box-shadow: 0 10px 50px rgba(0,0,0,0.9);
+        max-width: 600px;
+        width: 90%;
+        max-height: 80vh;
+        overflow: hidden;
+    }
+
+    #popup-rota h3 {
+        margin: 0;
+        padding: 20px 24px;
+        background: #000;
+        font-size: 18px;
+        font-weight: 600;
+        text-align: center;
+        border-bottom: 1px solid #333;
+    }
+
+    #popup-rota .rota-info {
+        padding: 20px 24px;
+        max-height: 50vh;
+        overflow-y: auto;
+        background: #0a0a0a;
+    }
+
+    #popup-rota .rota-stats {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        margin-bottom: 20px;
+        padding: 15px;
+        background: #1a1a1a;
+        border-radius: 8px;
+    }
+
+    #popup-rota .rota-stat {
+        text-align: center;
+    }
+
+    #popup-rota .rota-stat-num {
+        font-size: 28px;
+        font-weight: bold;
+        color: #4CAF50;
+        display: block;
+    }
+
+    #popup-rota .rota-stat-label {
+        font-size: 12px;
+        color: #999;
+        margin-top: 5px;
+    }
+
+    #popup-rota .rota-lista {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    #popup-rota .rota-item {
+        padding: 12px;
+        margin-bottom: 8px;
+        background: #1a1a1a;
+        border-radius: 8px;
+        border-left: 3px solid #4CAF50;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    #popup-rota .rota-numero {
+        background: #4CAF50;
+        color: #000;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        flex-shrink: 0;
+    }
+
+    #popup-rota .rota-detalhes {
+        flex: 1;
+    }
+
+    #popup-rota .rota-equipamento {
+        font-weight: 600;
+        font-size: 14px;
+        margin-bottom: 4px;
+    }
+
+    #popup-rota .rota-endereco {
+    font-size: 11px;
+    color: #666;
+    margin-top: 4px;
+    line-height: 1.4;
+    }
+
+    #popup-rota .rota-aviso {
+        background: #ff9800;
+        color: #000;
+        padding: 12px;
+        border-radius: 8px;
+        margin-top: 15px;
+        font-size: 13px;
+        text-align: center;
+        font-weight: 600;
+    }
+
+    #popup-rota .popup-buttons {
+        display: flex;
+        gap: 12px;
+        padding: 20px 24px;
+        background: #000;
+    }
+
+    #popup-rota .popup-buttons button {
+        flex: 1;
+        padding: 12px 20px;
+        font-size: 14px;
+        border-radius: 8px;
+        cursor: pointer;
+        border: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    #popup-rota .btn-confirmar {
+        background: #4CAF50;
+        color: #fff;
+    }
+
+    #popup-rota .btn-confirmar:hover {
+        background: #45a049;
+        transform: translateY(-2px);
+    }
+
+    #popup-rota .btn-cancelar {
+        background: #333;
+        color: #fff;
+    }
+
+    #popup-rota .btn-cancelar:hover {
+        background: #444;
+    }
+    #popup-rota .rota-progresso {
+    margin: 15px 0;
+    background: #0a0a0a;
+    border-radius: 8px;
+    padding: 10px;
+    }
+
+    #popup-rota .progresso-texto {
+        font-size: 12px;
+        color: #999;
+        margin-bottom: 8px;
+        text-align: center;
+    }
+
+    #popup-rota .progresso-barra-bg {
+        background: #1a1a1a;
+        border-radius: 4px;
+        height: 24px;
+        overflow: hidden;
+        border: 1px solid #333;
+    }
+
+    #popup-rota .progresso-barra-fill {
+        background: linear-gradient(90deg, #4CAF50 0%, #45a049 100%);
+        height: 100%;
+        width: 0%;
+        transition: width 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: bold;
+        color: white;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    }
+
+    #popup-rota .btn-copiar-lista {
+        background: #2196F3;
+        color: #fff;
+        margin-top: 10px;
+    }
+
+    #popup-rota .btn-copiar-lista:hover {
+        background: #1976D2;
+        transform: translateY(-2px);
+    }
+
+    #popup-rota .btn-copiar-lista.copiado {
+        background: #4CAF50;
+    }
+
+    .popup-rota-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.85);
+        backdrop-filter: blur(4px);
+        z-index: 10499;
+    }
 </style>
 </head>
 <body>
+<div id="talkback-popup"></div>
+<div class="popup-rota-overlay" id="popupRotaOverlay" onclick="fecharPopupRota()"></div>
+<div id="popup-rota">
+    <h3>🗺️ CONFIRMAR ROTA</h3>
+    <div class="rota-info" id="rotaInfo"></div>
+    <div class="popup-buttons">
+        <button class="btn-copiar-lista" onclick="copiarListaRota()" id="btnCopiarLista" style="display:none;">📋 Copiar Lista</button>
+        <button class="btn-confirmar" onclick="confirmarRota()">✓ Abrir no Google Maps</button>
+        <button class="btn-cancelar" onclick="fecharPopupRota()">✕ Cancelar</button>
+    </div>
+</div>   
 <div id="popupOverlay" class="popup-overlay" onclick="fecharPopup()"></div>
 <div id="popupTexto" class="popup">
     <h3 id="popupTitulo">Editar Texto</h3>
@@ -709,6 +981,502 @@ let seSelecionado = null;
 let alimentadorSelecionado = null;
 let inputAtualPopup = null;
 
+// FUNÇÃO TALKBACK POPUP
+function mostrarTalkback(mensagem, tipo = 'info', duracao = 2000) {
+    const popup = document.getElementById('talkback-popup');
+    popup.textContent = mensagem;
+    popup.className = tipo;
+    popup.style.display = 'block';
+    
+    setTimeout(() => {
+        popup.style.display = 'none';
+    }, duracao);
+}
+// VARIÁVEL GLOBAL PARA ARMAZENAR URL DA ROTA
+let urlRotaAtual = '';
+
+// ABRIR POPUP DE ROTA - VERSÃO OTIMIZADA SEM TRAVAMENTO
+// ABRIR POPUP DE ROTA - VERSÃO COM INDICADORES VISUAIS ANIMADOS
+async function abrirPopupRota(coordenadas, url) {
+    urlRotaAtual = url;
+    
+    const totalPontos = coordenadas.length;
+    const pontosNaRota = Math.min(totalPontos, 11);
+    
+    // Abre o popup PRIMEIRO
+    document.getElementById('popupRotaOverlay').style.display = 'block';
+    document.getElementById('popup-rota').style.display = 'block';
+    document.getElementById('btnCopiarLista').style.display = 'none';
+    
+    let html = `
+        <div class="rota-stats">
+            <div class="rota-stat">
+                <span class="rota-stat-num">${totalPontos}</span>
+                <span class="rota-stat-label">Total de Pontos</span>
+            </div>
+            <div class="rota-stat">
+                <span class="rota-stat-num">${pontosNaRota}</span>
+                <span class="rota-stat-label">Pontos na Rota</span>
+            </div>
+        </div>
+        <div class="rota-progresso">
+            <div class="progresso-texto">
+                Buscando endereços: <span id="progressoNumero">0 de ${pontosNaRota}</span><br>
+                <small id="progressoDetalhe" style="color: #666;">Aguarde...</small>
+            </div>
+            <div class="progresso-barra-bg">
+                <div class="progresso-barra-fill" id="progressoBarra">0%</div>
+            </div>
+        </div>
+        <ul class="rota-lista" id="rotaListaItens"></ul>
+    `;
+    
+    document.getElementById('rotaInfo').innerHTML = html;
+    
+    // ========================================
+    // 🔥 ADICIONA ESTILOS PARA ANIMAÇÕES
+    // ========================================
+    if (!document.getElementById('estilos-animacao-rota')) {
+        const style = document.createElement('style');
+        style.id = 'estilos-animacao-rota';
+        style.textContent = `
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+            
+            @keyframes pulse {
+                0%, 100% { opacity: 1; }
+                50% { opacity: 0.5; }
+            }
+            
+            .rota-loading {
+                display: inline-block;
+                width: 16px;
+                height: 16px;
+                border: 2px solid #333;
+                border-top-color: #4CAF50;
+                border-radius: 50%;
+                animation: spin 0.8s linear infinite;
+                margin-left: 8px;
+                vertical-align: middle;
+            }
+            
+            .rota-status-busca {
+                font-size: 10px;
+                color: #FF9800;
+                margin-top: 4px;
+                font-weight: bold;
+                animation: pulse 1s ease-in-out infinite;
+            }
+            
+            .rota-concluido {
+                color: #4CAF50;
+                font-weight: bold;
+                animation: none;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+    
+    // ========================================
+    // 🔥 VALIDAÇÃO DE LOGRADOURO
+    // ========================================
+    function validarLogradouro(texto) {
+    if (!texto) return false;
+    
+    const logradouros = [
+        // Nomes completos
+        /\b(rua|avenida|travessa|beco|rodovia|estrada|alameda|via|viela|ladeira|praça|caminho|marginal|contorno|passagem|setor|quadra)\b/i,
+        
+        // Abreviações com ponto (R., Av., Tv., etc)
+        /\b(r\.|av\.|tv\.|bc\.|rod\.|est\.|al\.|vl\.|pça|pca|lad\.|marg\.)\b/i,
+        
+        // 🔥 NOVO: Abreviações seguidas de número ou vírgula
+        /\b(r|av|tv|bc|rod|est|al|vl|lad|marg)\s*[,\d]/i,
+        
+        // Abreviações seguidas de letra (R Maria, Av Paulista)
+        /\b(r|av|tv|bc|rod|est|al|vl|lad|marg)\s+[a-zA-ZÀ-ÿ]/i,
+        
+        // 🔥 NOVO: "R." ou "R" sozinho no início da string
+        /^(r\.|r|av\.|av|tv\.|tv)\s/i
+    ];
+    
+    return logradouros.some(regex => regex.test(texto));
+    }
+    
+    // ========================================
+    // 🔥 FORMATAR ENDEREÇO
+    // ========================================
+    function formatarEndereco(data) {
+        if (!data || !data.address) return null;
+        
+        const addr = data.address;
+        const rua = addr.road || addr.street || '';
+        const numero = addr.house_number || '';
+        const bairro = addr.suburb || addr.neighbourhood || addr.city_district || '';
+        const cidade = addr.city || addr.town || addr.village || addr.municipality || '';
+        
+        let partes = [];
+        if (rua) partes.push(rua);
+        if (numero) partes.push(numero);
+        if (bairro) partes.push(bairro);
+        if (cidade) partes.push(cidade);
+        
+        return partes.length > 0 ? partes.join(', ') : data.display_name;
+    }
+    
+    // ========================================
+    // 🔥 ATUALIZAR STATUS DE UM ITEM NA LISTA
+    // ========================================
+    function atualizarStatusItem(indice, mensagem, concluido = false) {
+        const statusElement = document.getElementById(`status-item-${indice}`);
+        if (statusElement) {
+            statusElement.innerHTML = mensagem;
+            if (concluido) {
+                statusElement.classList.add('rota-concluido');
+                statusElement.classList.remove('rota-status-busca');
+            }
+        }
+    }
+    
+    // ========================================
+    // 🔥 DETECTAR COORDENADAS DUPLICADAS
+    // ========================================
+    const coordenadasVistas = new Map();
+    
+    // ========================================
+    // 🔥 BUSCA PROGRESSIVA (5m → 200m)
+    // ========================================
+    const RAIO_MAXIMO = 200;
+    
+    async function buscarEnderecoInteligente(latOriginal, lngOriginal, indicePonto) {
+        let enderecoFallback = `${latOriginal}, ${lngOriginal}`;
+        
+        // Atualiza status: buscando coordenada exata
+        atualizarStatusItem(indicePonto, '🔍 Buscando coordenada exata...');
+        document.getElementById('progressoDetalhe').textContent = 
+            `Ponto ${indicePonto + 1}: Buscando coordenada exata...`;
+        
+        try {
+            // ✅ Tenta coordenada EXATA primeiro
+            let response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latOriginal}&lon=${lngOriginal}&zoom=18&addressdetails=1`);
+            let data = await response.json();
+            
+            if (data) {
+                enderecoFallback = formatarEndereco(data) || enderecoFallback;
+                
+                if (validarLogradouro(enderecoFallback)) {
+                    console.log(`✅ Ponto ${indicePonto + 1}: Endereço exato encontrado`);
+                    atualizarStatusItem(indicePonto, '✅ Endereço encontrado!', true);
+                    return {
+                        endereco: enderecoFallback,
+                        tipo: 'exato',
+                        distancia: 0
+                    };
+                }
+            }
+            
+            // 🔥 BUSCA PROGRESSIVA: 5m → 10m → 20m → 50m → 100m → 150m → 200m
+            const passos = [5, 10, 20, 50, 100, 150, 200].filter(r => r <= RAIO_MAXIMO);
+            
+            for (const raio of passos) {
+                // Atualiza status visual com o raio atual
+                atualizarStatusItem(indicePonto, `🔍 Buscando em raio de ${raio}m...`);
+                document.getElementById('progressoDetalhe').textContent = 
+                    `Ponto ${indicePonto + 1}: Buscando em raio de ${raio}m...`;
+                
+                console.log(`🔍 Ponto ${indicePonto + 1}: Tentando raio de ${raio}m...`);
+                
+                const deslocamento = raio / 111000;
+                
+                const direcoes = [
+                    [deslocamento, 0],
+                    [deslocamento, deslocamento],
+                    [0, deslocamento],
+                    [-deslocamento, deslocamento],
+                    [-deslocamento, 0],
+                    [-deslocamento, -deslocamento],
+                    [0, -deslocamento],
+                    [deslocamento, -deslocamento]
+                ];
+                
+                for (const [dLat, dLng] of direcoes) {
+                    const novaLat = parseFloat(latOriginal) + dLat;
+                    const novaLng = parseFloat(lngOriginal) + dLng;
+                    
+                    try {
+                        await new Promise(resolve => setTimeout(resolve, 300));
+                        
+                        response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${novaLat}&lon=${novaLng}&zoom=18&addressdetails=1`);
+                        data = await response.json();
+                        
+                        if (data) {
+                            const enderecoTeste = formatarEndereco(data);
+                            
+                            if (enderecoTeste && validarLogradouro(enderecoTeste)) {
+                                console.log(`✅ Ponto ${indicePonto + 1}: Encontrado em ${raio}m`);
+                                atualizarStatusItem(indicePonto, `✅ Encontrado em ${raio}m!`, true);
+                                return {
+                                    endereco: enderecoTeste,
+                                    tipo: 'aproximado',
+                                    distancia: raio
+                                };
+                            }
+                        }
+                    } catch (err) {
+                        console.log(`⚠️ Ponto ${indicePonto + 1}: Erro ao testar raio ${raio}m`);
+                    }
+                }
+            }
+            
+        } catch (error) {
+            console.error(`❌ Ponto ${indicePonto + 1}: Erro na busca`, error);
+        }
+        
+        console.log(`⚠️ Ponto ${indicePonto + 1}: Nenhum logradouro válido encontrado`);
+        atualizarStatusItem(indicePonto, '⚠️ Sem logradouro válido', true);
+        return {
+            endereco: enderecoFallback,
+            tipo: 'padrao',
+            distancia: null
+        };
+    }
+    
+    // ========================================
+    // 🔥 PROCESSA CADA COORDENADA (COM ANIMAÇÃO)
+    // ========================================
+    for (let i = 0; i < pontosNaRota; i++) {
+        const c = coordenadas[i];
+        const [lat, lng] = c.coordenada.split(',');
+        const coordKey = `${lat},${lng}`;
+        
+        console.log(`\n📍 ===== PROCESSANDO PONTO ${i+1}/${pontosNaRota} =====`);
+        console.log(`Equipamento: ${c.equipamento}`);
+        console.log(`Coordenada: ${coordKey}`);
+        
+        // 🔥 ADICIONA O ITEM NA LISTA COM SPINNER ANIMADO
+        let listaHTML = '';
+        for (let j = 0; j <= i; j++) {
+            const coord = coordenadas[j];
+            const bordaCor = coord.isDuplicada ? '#FF9800' : (coord.enderecoCache ? '#4CAF50' : '#666');
+            const icone = coord.isDuplicada ? '🔄' : (j + 1);
+            const isProcessando = (j === i && !coord.enderecoCache);
+            
+            listaHTML += `
+                <li class="rota-item" style="border-left-color: ${bordaCor};">
+                    <div class="rota-numero" style="background: ${bordaCor};">
+                        ${icone}
+                        ${isProcessando ? '<span class="rota-loading"></span>' : ''}
+                    </div>
+                    <div class="rota-detalhes">
+                        <div class="rota-equipamento">${coord.equipamento}</div>
+                        <div class="rota-ranking" style="font-size: 11px; color: #999;">
+                            Ranking: ${coord.ranking}
+                            ${coord.isDuplicada ? '<span style="color: #FF9800;"> • Coordenada Repetida</span>' : ''}
+                        </div>
+                        <div class="rota-endereco" style="font-size: 11px; color: #666; margin-top: 4px;">
+                            ${coord.enderecoCache ? `📍 ${coord.enderecoCache}` : ''}
+                        </div>
+                        ${isProcessando ? `<div class="rota-status-busca" id="status-item-${j}">🔄 Iniciando busca...</div>` : ''}
+                        ${coord.enderecoCache && !coord.isDuplicada ? `<div class="rota-status-busca rota-concluido" id="status-item-${j}">✅ Concluído</div>` : ''}
+                        ${coord.isDuplicada ? `<div class="rota-status-busca rota-concluido" id="status-item-${j}">⚡ Reutilizado</div>` : ''}
+                    </div>
+                </li>
+            `;
+        }
+        
+        document.getElementById('rotaListaItens').innerHTML = listaHTML;
+        
+        // Processa o endereço
+        let endereco = '';
+        let isDuplicada = false;
+        
+        // Verifica se já processou essa coordenada antes
+        if (coordenadasVistas.has(coordKey)) {
+            endereco = coordenadasVistas.get(coordKey);
+            isDuplicada = true;
+            console.log(`🔄 Coordenada DUPLICADA detectada!`);
+            atualizarStatusItem(i, '⚡ Coordenada duplicada (reutilizada)', true);
+            document.getElementById('progressoDetalhe').textContent = 
+                `Ponto ${i + 1}: Coordenada duplicada (reutilizando endereço)`;
+            await new Promise(resolve => setTimeout(resolve, 500));
+        } else {
+            // Busca endereço inteligente
+            const resultado = await buscarEnderecoInteligente(lat, lng, i);
+            
+            endereco = resultado.endereco;
+            if (resultado.tipo === 'aproximado') {
+                endereco += ` (±${resultado.distancia}m)`;
+            } else if (resultado.tipo === 'padrao') {
+                endereco = `⚠️ ${endereco}`;
+            }
+            
+            // Guarda no cache
+            coordenadasVistas.set(coordKey, endereco);
+        }
+        
+        // Salva no objeto
+        coordenadas[i].enderecoCache = endereco;
+        coordenadas[i].isDuplicada = isDuplicada;
+        
+        // 🔥 ATUALIZA CONTADORES
+        const progresso = Math.round(((i + 1) / pontosNaRota) * 100);
+        document.getElementById('progressoNumero').textContent = `${i + 1} de ${pontosNaRota}`;
+        document.getElementById('progressoBarra').style.width = `${progresso}%`;
+        document.getElementById('progressoBarra').textContent = `${progresso}%`;
+        
+        // Aguarda antes do próximo
+        if (i < pontosNaRota - 1) {
+            await new Promise(resolve => setTimeout(resolve, 300));
+        }
+    }
+    
+    // ========================================
+    // 🔥 FINALIZA
+    // ========================================
+    document.getElementById('progressoDetalhe').textContent = '✅ Busca concluída!';
+    
+    let htmlFinal = `
+        <div class="rota-stats">
+            <div class="rota-stat">
+                <span class="rota-stat-num">${totalPontos}</span>
+                <span class="rota-stat-label">Total de Pontos</span>
+            </div>
+            <div class="rota-stat">
+                <span class="rota-stat-num">${pontosNaRota}</span>
+                <span class="rota-stat-label">Pontos na Rota</span>
+            </div>
+            <div class="rota-stat">
+                <span class="rota-stat-num" style="color: #FF9800;">${coordenadasVistas.size}</span>
+                <span class="rota-stat-label">Coordenadas Únicas</span>
+            </div>
+        </div>
+        <ul class="rota-lista">
+    `;
+    
+    coordenadas.slice(0, pontosNaRota).forEach((c, i) => {
+        const bordaCor = c.isDuplicada ? '#FF9800' : '#4CAF50';
+        const icone = c.isDuplicada ? '🔄' : (i + 1);
+        
+        htmlFinal += `
+            <li class="rota-item" style="border-left-color: ${bordaCor};">
+                <div class="rota-numero" style="background: ${bordaCor};">${icone}</div>
+                <div class="rota-detalhes">
+                    <div class="rota-equipamento">${c.equipamento}</div>
+                    <div class="rota-ranking" style="font-size: 11px; color: #999;">
+                        Ranking: ${c.ranking}
+                        ${c.isDuplicada ? '<span style="color: #FF9800;"> • Coordenada Repetida</span>' : ''}
+                    </div>
+                    <div class="rota-endereco" style="font-size: 11px; color: #666; margin-top: 4px;">
+                        📍 ${c.enderecoCache || c.coordenada}
+                    </div>
+                </div>
+            </li>
+        `;
+    });
+    
+    htmlFinal += `</ul>`;
+    
+    if (totalPontos > 11) {
+        htmlFinal += `
+            <div class="rota-aviso">
+                ⚠️ Google Maps limita a 10 paradas intermediárias.<br>
+                Apenas os primeiros 11 pontos serão incluídos na rota.
+            </div>
+        `;
+    }
+    
+    document.getElementById('rotaInfo').innerHTML = htmlFinal;
+    document.getElementById('btnCopiarLista').style.display = 'inline-block';
+    
+    console.log('✅ ===== BUSCA CONCLUÍDA =====');
+    console.log(`Total processado: ${pontosNaRota} pontos`);
+    console.log(`Coordenadas únicas: ${coordenadasVistas.size}`);
+}
+// FECHAR POPUP DE ROTA
+function fecharPopupRota() {
+    document.getElementById('popupRotaOverlay').style.display = 'none';
+    document.getElementById('popup-rota').style.display = 'none';
+    urlRotaAtual = '';
+}
+
+// CONFIRMAR E ABRIR ROTA
+function confirmarRota() {
+    if (urlRotaAtual) {
+        window.open(urlRotaAtual, '_blank');
+        mostrarTalkback('🗺️ Abrindo rota no Google Maps...', 'success');
+        fecharPopupRota();
+    }
+}
+// COPIAR LISTA DE ROTA
+function copiarListaRota() {
+    const linhas = document.querySelectorAll("#tabelaDT tbody tr");
+    let texto = `🗺️ *LISTA DE ROTA - DT CRIADAS*\n\n`;
+    let contador = 1;
+    
+    linhas.forEach(linha => {
+        if (linha.style.display !== "none") {
+            const botaoAcao = linha.querySelector('td:nth-child(15) button');
+            if (botaoAcao && botaoAcao.classList.contains('gerado')) {
+                const equipamento = linha.children[2].innerText;
+                const ranking = linha.children[0].innerText;
+                const enderecoTD = linha.querySelector('td:nth-child(10)');
+                const coordenada = enderecoTD.getAttribute('data-endereco');
+                
+                // Busca o endereço no popup (se já foi carregado)
+                const itensRota = document.querySelectorAll('.rota-item');
+                let enderecoTexto = coordenada;
+                
+                itensRota.forEach(item => {
+                    const equip = item.querySelector('.rota-equipamento');
+                    if (equip && equip.textContent === equipamento) {
+                        const endElement = item.querySelector('.rota-endereco');
+                        if (endElement) {
+                            enderecoTexto = endElement.textContent.replace('📍 ', '');
+                        }
+                    }
+                });
+                
+                let linkMapa = '';
+                if (coordenada && coordenada.includes(',')) {
+                    const coords = coordenada.split(',');
+                    if (coords.length === 2) {
+                        linkMapa = `https://www.google.com/maps?q=${coords[0].trim()},${coords[1].trim()}`;
+                    }
+                }
+                
+                const enderecoLimpo = enderecoTexto
+                  .replace(/\s+/g, ' ')
+                  .trim();
+
+                texto += `*${contador}. ${equipamento}*\n`;
+                texto += `Ranking: ${ranking}\n`;
+                texto += `📍 Endereço: ${enderecoLimpo}\n`;
+                texto += `🗺️ Mapa: ${linkMapa}\n`;
+                texto += `──────────────\n`;
+                
+                contador++;
+            }
+        }
+    });
+    
+    texto += `_Total: ${contador - 1} pontos_`;
+    
+    navigator.clipboard.writeText(texto);
+    
+    const botao = document.getElementById('btnCopiarLista');
+    const textoOriginal = botao.innerHTML;
+    botao.innerHTML = '✓ Copiado!';
+    botao.classList.add('copiado');
+    
+    setTimeout(() => {
+        botao.innerHTML = textoOriginal;
+        botao.classList.remove('copiado');
+    }, 2000);
+    
+    mostrarTalkback('✓ Lista copiada com endereços!', 'success');
+}   
 // FUNÇÕES POPUP
 function abrirPopup(input, titulo) {
     inputAtualPopup = input;
@@ -739,8 +1507,6 @@ function salvarSessaoAutomatica() {
     localStorage.setItem('dt_sessao_atual', JSON.stringify(sessao));
     
     const status = document.getElementById('statusSalvamento');
-    status.textContent = '✔ Salvo automaticamente';
-    setTimeout(() => status.textContent = '', 2000);
 }
 
 // CAPTURAR ESTADO DA SESSÃO
@@ -788,7 +1554,7 @@ function exportarSessao() {
     a.click();
     URL.revokeObjectURL(url);
     
-    alert('✅ Sessão exportada com sucesso!');
+    mostrarTalkback('✅ Sessão exportada com sucesso!', 'success');
 }
 
 // IMPORTAR SESSÃO
@@ -801,9 +1567,9 @@ function importarSessao(input) {
         try {
             const sessao = JSON.parse(e.target.result);
             restaurarSessao(sessao);
-            alert('✅ Sessão importada com sucesso!');
+            mostrarTalkback('✅ Sessão importada com sucesso!', 'success');
         } catch (erro) {
-            alert('❌ Erro ao importar sessão: ' + erro.message);
+            mostrarTalkback('❌ Erro ao importar sessão: ' + erro.message, 'error', 3000);
         }
     };
     reader.readAsText(arquivo);
@@ -876,9 +1642,9 @@ window.addEventListener('DOMContentLoaded', function() {
         try {
             const sessao = JSON.parse(sessaoSalva);
             restaurarSessao(sessao);
-            console.log('✅ Sessão anterior restaurada automaticamente');
+            mostrarTalkback('✅ Sessão anterior restaurada automaticamente', 'success');
         } catch (erro) {
-            console.error('Erro ao restaurar sessão:', erro);
+            mostrarTalkback('❌ Erro ao restaurar sessão anterior', 'error');
         }
     }
 });
@@ -951,7 +1717,7 @@ function atualizarGrafico() {
     const linhas = document.querySelectorAll("#tabelaDT tbody tr");
     
     let total = 0;
-    let pendente = 0;
+    let pendenteDT = 0;
     let criada = 0;
     let realizado = 0;
     let naoRealizado = 0;
@@ -967,7 +1733,7 @@ function atualizarGrafico() {
                 if (botaoAcao.classList.contains('gerado')) {
                     criada++;
                 } else {
-                    pendente++;
+                    pendenteDT++;
                 }
             }
             
@@ -975,19 +1741,19 @@ function atualizarGrafico() {
             if (botaoStatus) {
                 if (botaoStatus.classList.contains('realizado')) {
                     realizado++;
+                } else if (botaoStatus.classList.contains('nao-realizado')) {
+                    naoRealizado++;
                 } else if (botaoStatus.classList.contains('reprogramar')) {
                     reprogramar++;
                 } else if (botaoStatus.classList.contains('enviar-inspetor')) {
                     inspetor++;
-                } else {
-                    naoRealizado++;
                 }
             }
         }
     });
 
     document.getElementById('metricaTotal').textContent = total;
-    document.getElementById('metricaPendente').textContent = pendente;
+    document.getElementById('metricaPendente').textContent = pendenteDT;
     document.getElementById('metricaCriada').textContent = criada;
     document.getElementById('metricaRealizado').textContent = realizado;
     document.getElementById('metricaNaoRealizado').textContent = naoRealizado;
@@ -1071,11 +1837,142 @@ function verificarBotaoRota() {
     btnRota.style.display = temDTCriada ? 'inline-block' : 'none';
 }
 
-// CRIAR ROTA NO MAPA
+// ========================================
+// 🔥 VALIDADOR E NORMALIZADOR DE COORDENADAS
+// ========================================
+function validarENormalizarCoordenadas(texto) {
+    // 1️⃣ Verifica se está vazio ou nulo
+    if (!texto || texto.trim() === '') {
+        console.warn('⚠️ Coordenada vazia');
+        return null;
+    }
+    
+    // 2️⃣ Remove espaços extras e converte para string
+    let limpo = String(texto).trim();
+    
+    // 3️⃣ Substitui separadores comuns por vírgula padrão
+    // Aceita: vírgula, ponto-e-vírgula, barra, pipe
+    limpo = limpo.replace(/[;|/]/g, ',');
+    
+    // 4️⃣ Normaliza espaços ao redor da vírgula
+    limpo = limpo.replace(/\s*,\s*/g, ',');
+    
+    // 5️⃣ Remove múltiplos espaços internos
+    limpo = limpo.replace(/\s+/g, ' ');
+    
+    // 6️⃣ Separa em partes
+    let partes;
+    if (limpo.includes(',')) {
+        partes = limpo.split(',');
+    } else if (limpo.includes(' ')) {
+        partes = limpo.split(' ');
+    } else {
+        console.warn('⚠️ Coordenada sem separador válido:', texto);
+        return null;
+    }
+    
+    // 7️⃣ Deve ter exatamente 2 partes
+    if (partes.length !== 2) {
+        console.warn('⚠️ Coordenada deve ter 2 valores (lat,lng):', texto);
+        return null;
+    }
+    
+    // 8️⃣ Limpa cada parte (remove caracteres inválidos)
+    const lat = partes[0].trim().replace(/[^\d\.\-]/g, '');
+    const lng = partes[1].trim().replace(/[^\d\.\-]/g, '');
+    
+    // 9️⃣ Converte para número
+    const latNum = parseFloat(lat);
+    const lngNum = parseFloat(lng);
+    
+    // 🔟 Valida se são números válidos
+    if (isNaN(latNum) || isNaN(lngNum)) {
+        console.warn('⚠️ Valores não numéricos:', { lat, lng });
+        return null;
+    }
+    
+    // 1️⃣1️⃣ VALIDA RANGE DE LATITUDE (-90 a +90)
+    if (latNum < -90 || latNum > 90) {
+        console.warn('⚠️ Latitude fora do range (-90 a +90):', latNum);
+        return null;
+    }
+    
+    // 1️⃣2️⃣ VALIDA RANGE DE LONGITUDE (-180 a +180)
+    if (lngNum < -180 || lngNum > 180) {
+        console.warn('⚠️ Longitude fora do range (-180 a +180):', lngNum);
+        return null;
+    }
+    
+    // 1️⃣3️⃣ VALIDA TAMANHO MÍNIMO (coordenadas muito curtas são suspeitas)
+    if (lat.length < 3 || lng.length < 3) {
+        console.warn('⚠️ Coordenada muito curta (mínimo 3 caracteres):', { lat, lng });
+        return null;
+    }
+    
+    // 1️⃣4️⃣ VALIDA TAMANHO MÁXIMO
+    if (lat.length > 15 || lng.length > 15) {
+        console.warn('⚠️ Coordenada muito longa (máximo 15 caracteres):', { lat, lng });
+        return null;
+    }
+    
+    // 1️⃣5️⃣ Verifica se não são zeros (0,0 ou 0.0,0.0)
+    if (latNum === 0 && lngNum === 0) {
+        console.warn('⚠️ Coordenada inválida (0,0)');
+        return null;
+    }
+    
+    // ✅ TUDO OK! Retorna coordenadas normalizadas
+    const coordenadaNormalizada = `${latNum},${lngNum}`;
+    
+    console.log(`✅ Coordenada validada: "${texto}" → "${coordenadaNormalizada}"`);
+    
+    return {
+        original: texto,
+        normalizada: coordenadaNormalizada,
+        latitude: latNum,
+        longitude: lngNum,
+        valida: true
+    };
+}    
+    
+// CRIAR ROTA NO MAPA - VERSÃO FINAL OTIMIZADA
 function criarRotaMapa() {
     const linhas = document.querySelectorAll("#tabelaDT tbody tr");
     const coordenadas = [];
 
+    // 🔥 PARSER ROBUSTO DE COORDENADAS
+    function parseCoordenadasSeguro(texto) {
+        if (!texto) return null;
+        
+        // Remove espaços extras e normaliza separadores
+        const limpo = texto.trim().replace(/\s+/g, ' ');
+        
+        // Tenta diferentes formatos de separação
+        let partes;
+        if (limpo.includes(',')) {
+            partes = limpo.split(',');
+        } else if (limpo.includes(';')) {
+            partes = limpo.split(';');
+        } else if (limpo.includes(' ')) {
+            partes = limpo.split(' ');
+        } else {
+            return null;
+        }
+        
+        // Limpa e valida cada parte
+        const lat = parseFloat(partes[0].trim());
+        const lng = parseFloat(partes[1].trim());
+        
+        // Valida se são números válidos e estão em range razoável
+        if (isNaN(lat) || isNaN(lng)) return null;
+        if (lat < -90 || lat > 90) return null;
+        if (lng < -180 || lng > 180) return null;
+        
+        // Retorna formatado SEM ESPAÇOS
+        return `${lat},${lng}`;
+    }
+
+    // 1️⃣ Coleta todas as coordenadas válidas
     linhas.forEach(linha => {
         if (linha.style.display !== "none") {
             const botaoAcao = linha.querySelector('td:nth-child(15) button');
@@ -1083,41 +1980,49 @@ function criarRotaMapa() {
                 const enderecoTD = linha.querySelector('td:nth-child(10)');
                 const endereco = enderecoTD.getAttribute('data-endereco');
                 
-                if (endereco && endereco.includes(',')) {
+                // 🔥 USA O PARSER ROBUSTO
+                const resultadoValidacao = validarENormalizarCoordenadas(endereco);
+
+                if (resultadoValidacao && resultadoValidacao.valida) {
                     coordenadas.push({
-                        coordenada: endereco.trim(),
+                        coordenada: resultadoValidacao.normalizada,
                         equipamento: linha.children[2].innerText,
                         ranking: linha.children[0].innerText
                     });
+                    console.log(`✅ Adicionado: ${linha.children[2].innerText} - ${resultadoValidacao.normalizada}`);
+                } else {
+                    console.warn('❌ Coordenada inválida ignorada:', endereco);
+                    mostrarTalkback(`⚠️ Coordenada inválida ignorada: ${linha.children[2].innerText}`, 'error', 3000);
                 }
             }
         }
     });
 
     if (coordenadas.length === 0) {
-        alert('❌ Nenhum item com "DT Criada" encontrado no filtro atual!');
+        mostrarTalkback('❌ Nenhum item com "DT Criada" e coordenadas válidas encontrado!', 'error');
         return;
     }
 
+    console.log('✅ Total de coordenadas válidas:', coordenadas.length);
+
+    // 2️⃣ Caso especial: apenas 1 ponto
     if (coordenadas.length === 1) {
-        // Se só tem 1 ponto, abre direto
-        window.open(`https://www.google.com/maps?q=${coordenadas[0].coordenada}`, '_blank');
+        const url = `https://www.google.com/maps?q=${coordenadas[0].coordenada}`;
+        abrirPopupRota(coordenadas, url);
         return;
     }
 
-    // Monta URL da rota no Google Maps
-    // Origem: primeiro ponto
+    // 3️⃣ Monta URL da rota SEM DUPLICAÇÃO
     const origem = coordenadas[0].coordenada;
-    
-    // Destino: último ponto
     const destino = coordenadas[coordenadas.length - 1].coordenada;
     
-    // Waypoints: pontos intermediários (máximo 9 waypoints no Google Maps)
+    // 🔥 WAYPOINTS: pega do índice 1 até length-2 (MÁXIMO 9)
     let waypoints = [];
     for (let i = 1; i < coordenadas.length - 1 && waypoints.length < 9; i++) {
         waypoints.push(coordenadas[i].coordenada);
     }
 
+    // 4️⃣ Monta URL final
     let url = `https://www.google.com/maps/dir/?api=1&origin=${origem}&destination=${destino}`;
     
     if (waypoints.length > 0) {
@@ -1126,21 +2031,13 @@ function criarRotaMapa() {
 
     url += '&travelmode=driving';
 
-    // Mostra resumo
-    const resumo = `
-🗺️ ROTA CRIADA COM SUCESSO!
+    console.log('🗺️ URL da Rota:', url);
+    console.log('📍 Origem:', origem);
+    console.log('📍 Destino:', destino);
+    console.log('📍 Waypoints (' + waypoints.length + '):', waypoints);
 
-📍 Total de pontos: ${coordenadas.length}
-${coordenadas.length > 11 ? '\n⚠️ Atenção: Google Maps limita a 10 paradas intermediárias.\nApenas os primeiros 11 pontos serão incluídos na rota.' : ''}
-
-🚗 Abrindo rota no Google Maps...
-
-Lista de equipamentos na rota:
-${coordenadas.slice(0, 11).map((c, i) => `${i + 1}. ${c.equipamento} (Ranking: ${c.ranking})`).join('\n')}
-    `.trim();
-
-    alert(resumo);
-    window.open(url, '_blank');
+    // 5️⃣ Abre popup de confirmação
+    abrirPopupRota(coordenadas, url);
 }
 
 // ATUALIZAR BOTÕES BASE
