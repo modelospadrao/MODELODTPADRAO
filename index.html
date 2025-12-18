@@ -8,18 +8,22 @@
     body { 
         font-family: Arial, sans-serif; 
         background: #eef1f5; 
-        padding: 20px;
+        padding: 10px 20px;
         margin: 0;
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
     }
-    h2 { margin-bottom: 10px; }
+    h2 { margin-bottom: 5px; margin-top: 0; }
 
     /* Container fixo para cabeçalho e filtros */
     .header-container {
-        position: sticky;
-        top: 0;
         background: #eef1f5;
         z-index: 100;
-        padding-bottom: 10px;
+        padding-bottom: 5px;
+        flex-shrink: 0;
     }
 
     /* Layout dos filtros em cascata */
@@ -31,12 +35,13 @@
         align-items: stretch;
     }
 
-    /* Wrapper da tabela com scroll */
+    /* Wrapper da tabela com scroll INTERNO */
     .table-wrapper {
-        max-height: calc(100vh - 300px);
+        flex: 1;
+        min-height: 200px;
         overflow-y: auto;
         overflow-x: auto;
-        border: 2px solid #333;
+        border: 1px solid rgba(51, 51, 51, 0.4);
         border-radius: 8px;
         background: white;
     }
@@ -55,11 +60,16 @@
     }
 
     th, td {
-        padding: 10px;
-        text-align: left;
-        border-bottom: 1px solid #ccc;
-        font-size: 14px;
-        white-space: nowrap;
+    padding: 6px 8px;
+    text-align: left;
+    border-left: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    font-size: 13px;
+    white-space: nowrap;
+    }
+
+    th:first-child, td:first-child {
+        border-left: none;
     }
 
     th {
@@ -85,13 +95,13 @@
     }
 
     button {
-        font-size: 16px;
+        font-size: 14px;
         background-color: #444;
         color: #fff;
         border: none;
         border-radius: 25px;
         cursor: pointer;
-        padding: 10px 20px;
+        padding: 6px 14px;
         box-shadow: 0 10px 0 rgba(0,0,0,0.1);
         transition: transform 0.2s, box-shadow 0.2s;
     }
@@ -117,6 +127,10 @@
     button.nao-realizado {
         background-color: red !important;
     }
+    button.pendente {
+    background-color: #FF9800 !important;
+    color: #fff !important;
+    }
 
     button.reset-btn {
         margin: 3px;
@@ -130,41 +144,41 @@
         box-shadow: 0 4px 0 rgba(0,0,0,0.1);
         transition: transform 0.2s, box-shadow 0.2s;
     }
-
-
     tr.marcado {
         background: #fff0f0 !important;
     }
 
-    input.codigo, input.lead, input.retorno {
-        width: 120px;
-        margin: 3px;
-        padding: 6px 10px;
-        border: none;
-        background-color: #444;
-        color: #fff;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 15px;
-        box-shadow: 0 4px 0 rgba(0,0,0,0.1);
-        transition: transform 0.2s, box-shadow 0.2s;
+    input.codigo, input.lead {
+    width: 85px;
+    margin: 2px;
+    padding: 7px 10px;
+    border: none;
+    background-color: #444;
+    color: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    box-shadow: 0 4px 0 rgba(0,0,0,0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
     }
 
+    input.codigo::placeholder, 
+    input.lead::placeholder {
+        color: #ccc;
+        opacity: 35;
+    }
     input.obs, input.retorno {
-        width: 30px;
-        margin: 3px;
-        padding: 6px 10px;
-        border: none;
-        background-color: #444;
-        color: #fff;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 15px;
-        box-shadow: 0 4px 0 rgba(0,0,0,0.1);
-        transition: transform 0.2s, box-shadow 0.2s;
+    width: 75px;
+    padding: 8px 12px;
+    border: 1px solid #979797;
+    background-color: rgb(255, 255, 255);
+    color: #333;
+    border-radius: 2px 10px 10px 18px;
+    cursor: pointer;
+    font-size: 14px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+    transition: transform 0.2s, box-shadow 0.2s;
     }
-
-
     .popup {
         display: none;
         position: fixed;
@@ -184,9 +198,9 @@
     }
 
     .popup textarea {
-        width: 90%;
-        min-height: 100px;
-        padding: 9px;
+        width: 89%;
+        min-height: 468px;
+        padding: 10px;
         margin: 10px 0;
         border-radius: 8px;
         border: 2px solid #666;
@@ -240,22 +254,6 @@
         z-index: 9999;
     }
 
-    .acoes-sessao {
-        margin: 10px 0;
-        padding: 10px;
-        background: white;
-        border-radius: 25px;
-        border: 3px solid #333;
-        box-shadow: 7px 6px 5px rgba(0,0,0,0.3);
-        text-align: center;
-    }
-
-    .acoes-sessao button {
-        margin: 3px;
-        padding: 8px 15px;
-        font-size: 14px;
-    }
-
     .btn-exportar {
         margin: 2px;
         padding: 6px 10px;
@@ -301,16 +299,17 @@
     }
 
     .btn-criar-rota {
-        margin: 2px;
-        padding: 6px 10px;
-        border: none;
-        background-color: rgb(250, 185, 0);
-        color: #000000;
-        border-radius: 18px;
-        cursor: pointer;
-        font-size: 15px;
-        box-shadow: 0 4px 0 rgba(0,0,0,0.1);
-        transition: transform 0.2s, box-shadow 0.2s;
+    margin: 2px;
+    padding: 6px 10px;
+    border: 0px solid #ff0000;
+    background-color: #ff0000;
+    color: #ffffff;
+    border-radius: 18px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: bold;
+    box-shadow: 0 4px 0 rgba(0,0,0,0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
     }
 
     @keyframes pulse {
@@ -319,154 +318,100 @@
     }
 
 
-    /* GRÁFICO DE CONTAGEM - SEM CAIXA, COMPACTO À DIREITA */
+    /* GRÁFICO DE CONTAGEM */
     .grafico-container {
-        flex: 0 0 auto;
-        background: transparent;
-        padding: 0;
-        margin-left: auto;
-        margin-right: 63px;
-        margin-bottom: 11px;
-        margin-top: 11px;
-        border-radius: 0;
-        border: 1px;
-        box-shadow: none;
-        display: flex;
-        flex-direction: column;
-        min-width: 0;
+        background: rgba(255, 255, 255, 0);
+        padding: 6px 28px;
+        
     }
 
     .grafico-titulo {
-        display: none;
+        font-size: 14px;
+        font-weight: bold;
+        margin-bottom: 6px;
+        text-align: center;
+        color: #004c97;
     }
 
     .grafico-metricas {
-        display: flex;
-        align-items: flex-end;
-        justify-content: space-between; /* empurra esquerda e direita */
-        padding-left: 8px;              /* margem esquerda */
-        padding-right: 8px;             /* margem direita */
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 8px;
     }
-
-    .grupo-esquerda {
-        display: flex;
-        align-items: flex-end;
-        gap: 6px;
-    }
-
-    .grupo-direita {
-        display: flex;
-        align-items: flex-end;
-        gap: 6px;
-    }
-
 
     .metrica-item {
-        flex: 0 0 auto;
-        min-width: 55px;
-        max-width: 75px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-end;
-        padding: 4px;
+        padding: 6px;
         border-radius: 6px;
-        background: #f8f9fa;
-        position: relative;
-        box-shadow: 0 4px 0 rgb(0, 0, 0);
-        border: 1px solid #333;
+        text-align: center;
+        border: 2px solid #ddd;
     }
 
     .metrica-numero {
-        font-size: 16px;
+        font-size: 20px;
         font-weight: bold;
-        margin-bottom: 5px;
-        z-index: 2;
-    }
-
-    .metrica-barra {
-        width: 100%;
-        max-width: 50px;
-        transition: height 0.3s ease, opacity 0.2s ease;
-        height: 0;
-        min-height: 0;   /* 🔴 isso é importante */
-        box-shadow: none;
+        display: block;
     }
 
     .metrica-label {
-    font-size: 12px;
-    color: #666;
-    text-align: center;
-    line-height: 1.1;
-
-    min-height: 28px;   /* espaço para até 2 linhas */
-    margin-top: 6px;    /* garante respiro igual para todos */
-
-    z-index: 2;
-    }
-    .metrica-item {
-    height: 140px; /* todas iguais */
-    width: 100%;
-    }
-    .metrica-barra-container {
-    height: 70px;          /* área fixa da barra */
-    width: 100%;
-    display: flex;
-    align-items: flex-end; /* barra cresce de baixo */
+        font-size: 15px;
+        color: #666;
+        margin-top: 2px;
+        display: block;
     }
 
-    /* Cores das barras */
-    .metrica-total .metrica-barra { background: #2196F3; }
-    .metrica-pendente .metrica-barra { background: #FF9800; }
-    .metrica-criada .metrica-barra { background: #4CAF50; }
-    .metrica-realizado .metrica-barra { background: #2E7D32; }
-    .metrica-nao-realizado .metrica-barra { background: #f44336; }
-    .metrica-reprogramar .metrica-barra { background: #9E9E9E; }
-    .metrica-inspetor .metrica-barra { background: #263238; }
+    .metrica-total { background: #e3f2fd; border-color: #2196F3; }
+    .metrica-total .metrica-numero { color: #f32121; }
 
-    /* Cores dos números */
-    .metrica-total .metrica-numero { color: #2196F3; }
+    .metrica-pendente { background: #fff3e0; border-color: #FF9800; }
     .metrica-pendente .metrica-numero { color: #FF9800; }
+
+    .metrica-criada { background: #e8f5e9; border-color: #4CAF50; }
     .metrica-criada .metrica-numero { color: #4CAF50; }
+
+    .metrica-realizado { background: #c8e6c9; border-color: #2E7D32; }
     .metrica-realizado .metrica-numero { color: #2E7D32; }
+
+    .metrica-nao-realizado { background: #ffebee; border-color: #f44336; }
     .metrica-nao-realizado .metrica-numero { color: #f44336; }
+
+    .metrica-reprogramar { background: #f5f5f5; border-color: #9E9E9E; }
     .metrica-reprogramar .metrica-numero { color: #9E9E9E; }
-    .metrica-inspetor .metrica-numero { color: #263238; }
 
+    .metrica-inspetor { background: #263238; border-color: #000; }
+    .metrica-inspetor .metrica-numero { color: #fff; }
 
-    .status-salvamento {
-        display: inline-block;
-        margin-left: 10px;
-        color: #28a745;
-        font-size: 12px;
+    button.reprogramar {
+        background-color: #9E9E9E !important;
+    }
+
+    button.enviar-inspetor {
+        background-color: #000 !important;
+        color: white !important;
     }
 
     /* FILTROS EM BOTÕES (BASE / SE / ALIM) */
     #botoesBASE,
     #botoesSE,
     #botoesALIM {
-        margin-top: 11px;
         background: #ffffff;
         padding: 8px;
-        border-radius: 20px;
+        border-radius: 12px;
         border: 1px solid #333;
         box-shadow: 7px 6px 5px rgba(0,0,0,0.3);
         text-align: center;
-        min-width: 200px;
-        max-width: 400px;
         flex: 1;
         position: relative;
-        min-height: 120px;
         display: flex;
         flex-direction: column;
+        overflow: visible;
     }
 
     #botoesBASE b,
     #botoesSE b,
     #botoesALIM b {
         display: block;
-        margin-bottom: 5px;
-        font-size: 14px;
+        margin-bottom: 6px;
+        font-size: 13px;
     }
 
     #botoesBASE > br,
@@ -476,43 +421,60 @@
     }
 
     .botoes-container {
-        flex: 1;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
+        gap: 4px;
+        padding-top: 0;
+    }
+
+    /* Container específico da BASE - botões ajustáveis ao texto */
+    #botoesBASE .botoes-container {
         display: flex;
         flex-wrap: wrap;
-        gap: 3px;
-        align-content: flex-start;
         justify-content: center;
-        padding-top: 25px;
+        gap: 4px;
     }
 
     /* Botões padrão */
-    #botoesBASE button,
-    #botoesSE button,
-    #botoesALIM button {
-        margin: 1px;
-        padding: 9px 10px;
+    #botoesBASE button:not(.limpar),
+    #botoesSE button:not(.limpar),
+    #botoesALIM button:not(.limpar) {
+        margin: 0;
+        padding: 6px 6px;
         border: none;
         background-color: #444;
         color: #fff;
         border-radius: 18px;
         cursor: pointer;
-        font-size: 12px;
-        box-shadow: 0 4px 0 rgba(0,0,0,0.1);
+        font-size: 11px;
+        box-shadow: 0 3px 0 rgba(0,0,0,0.15);
         transition: transform 0.2s, box-shadow 0.2s;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        min-width: 90px;
+    }
+
+    /* Botões da BASE - ajuste automático ao texto */
+    #botoesBASE button:not(.limpar) {
+        min-width: auto;
+        padding: 6px 10px;
+        overflow: visible;
+        text-overflow: unset;
     }
 
     /* Hover */
-    #botoesBASE button:hover,
-    #botoesSE button:hover,
-    #botoesALIM button:hover {
+    #botoesBASE button:not(.limpar):hover,
+    #botoesSE button:not(.limpar):hover,
+    #botoesALIM button:not(.limpar):hover {
         transform: scale(1.02);
-        box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+        box-shadow: 0 5px 8px rgba(0,0,0,0.2);
     }
 
     /* Click */
-    #botoesBASE button:active,
-    #botoesSE button:active,
-    #botoesALIM button:active {
+    #botoesBASE button:not(.limpar):active,
+    #botoesSE button:not(.limpar):active,
+    #botoesALIM button:not(.limpar):active {
         transform: scale(0.98);
     }
 
@@ -531,54 +493,77 @@
     #botoesBASE button.limpar,
     #botoesSE button.limpar,
     #botoesALIM button.limpar {
-        position: absolute;
-        top: 6px;
-        right: 8px;
-
-        width: 26px;
-        height: 26px;
-
-        background-color: #e63946 !important;
+        background-color: #ff4444 !important;
         color: #fff !important;
-
-        border-radius: 50%;   /* 🔴 deixa redondo */
-        border: none;
-
+        font-weight: bold;
+        position: absolute;
+        top: 3px;
+        right: 3px;
+        padding: 2px 8px;
+        font-size: 14px;
+        border-radius: 50%;
+        margin: 0;
+        min-width: auto !important;
+        width: 20px;
+        height: 20px;
         display: flex;
         align-items: center;
         justify-content: center;
-
-        font-size: 14px;
-        font-weight: bold;
-        cursor: pointer;
-
-        box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+    }
+    /* ESCONDE o input feio */
+    .status-salvamento {
+        position: absolute;
+        top: 5px;
+        right: 15px;
+        color: #28a745;
+        font-size: 12px;
     }
 
-     .container-botoes-menu {
-    display: flex;
-    justify-content: right; /* centraliza os botões */
-    align-items: center;
-    }
-
-    .input-file {
+    .acoes-sessao {
         display: flex;
         align-items: center;
-        gap: 12px;
+        justify-content: space-between;
+        gap: 10px;
+        margin: 5px 0;
+        padding: 0;
+        background: transparent;
+        border: none;
+        box-shadow: none;
     }
 
-    /* ESCONDE o input feio */
-    .input-file input[type="file"] {
-        display: none;
+    .acoes-esquerda {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .acoes-centro {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .acoes-direita {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 120px;
+        justify-content: flex-end;
+    }
+
+    .acoes-sessao button {
+        margin: 0;
+        padding: 6px 14px;
+        font-size: 13px;
     }
 
     .btn-file-input {
-        padding: 8px 18px;
+        padding: 6px 14px;
         background: linear-gradient(135deg, #444, #222);
         color: #fff;
         border-radius: 20px;
         cursor: pointer;
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 500;
         box-shadow: 0 4px 10px rgba(0,0,0,0.25);
         transition: all 0.25s ease;
@@ -590,44 +575,17 @@
     }
 
     .file-name {
-        font-size: 13px;
-        color: #ccc;
+        font-size: 12px;
+        color: #666;
         font-style: italic;
-        max-width: 220px;
+        max-width: 150px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
     }
-
 </style>
 </head>
 <body>
-
-<h2 style="text-align: center; font-size: 25px; font-weight: bold; color: #e63946;">MODELO CRIAR DT INSPEÇÕES REINTERADAS E RNT</h2>
-  <h2 style="text-align: center; font-size: 21px; font-weight: bold; color: #000;">(Versão 5.0)</h2>
-
-<div class="input-file">
-    <label for="arquivoXLSX" class="btn-file-input">
-        📂 Abrir arquivo
-    </label>
-    <span class="file-name" id="nomeArquivo">Nenhum arquivo selecionado</span>
-
-    <input type="file" id="arquivoXLSX" accept=".xlsx" onchange="mostrarNomeArquivo(this)">
-</div>
-
-   
-<div class="container-botoes-menu">    
-    <button class="btn-exportar" onclick="exportarSessao()">📥 Exportar</button>
-        <button class="btn-importar" onclick="document.getElementById('importarSessao').click()">📤 Importar</button>
-        <button class="btn-limpar-filtros" onclick="limparFiltros()">🔄 Limpar Filtros</button>
-        <button class="btn-criar-rota" id="btnCriarRota" onclick="criarRotaMapa()" style="display:none;">🗺️ Criar Rota no Mapa</button>
-        <input type="file" id="importarSessao" accept=".json" style="display:none;" onchange="importarSessao(this)">
-        <span class="status-salvamento" id="statusSalvamento"></span>
-</div>
-
-
-   
-    
 <div id="popupOverlay" class="popup-overlay" onclick="fecharPopup()"></div>
 <div id="popupTexto" class="popup">
     <h3 id="popupTitulo">Editar Texto</h3>
@@ -637,76 +595,46 @@
         <button class="close-button" onclick="fecharPopup()">✖ Fechar</button>
     </div>
 </div>
+<h2 style="text-align: center; font-size: 25px; font-weight: 900; color: #e63946; margin: 5px 0;">MODELO CRIAR DT INSPEÇÕES REINTERADAS E RNT</h2>
+
+    
+<span class="status-salvamento" id="statusSalvamento"></span>
+<div class="acoes-sessao">
+    <div class="acoes-esquerda">
+        <label for="arquivoXLSX" class="btn-file-input">📂 Abrir arquivo</label>
+        <input type="file" id="arquivoXLSX" accept=".xlsx" style="display:none;" onchange="mostrarNomeArquivo(this)">
+        <span class="file-name" id="nomeArquivo"></span>
+    </div>
+    <div class="acoes-centro">
+        <button class="btn-exportar" onclick="exportarSessao()">💾 Exportar</button>
+        <button class="btn-importar" onclick="document.getElementById('importarSessao').click()">⏏️ Importar</button>
+        <button class="btn-limpar-filtros" onclick="limparFiltros()">❌ Limpar Filtros</button>
+        <input type="file" id="importarSessao" accept=".json" style="display:none;" onchange="importarSessao(this)">
+    </div>
+    <div class="acoes-direita">
+        <button class="btn-criar-rota" id="btnCriarRota" onclick="criarRotaMapa()" style="display:none;">🗺️ Criar Rota</button>
+    </div>
+</div>
+
+    
 
 <div class="header-container">
-    <div class="area-filtros-metricas">
     <div class="filtros-cascata">
         <div id="botoesBASE">
             <b>BASE:</b>
         </div>
 
-        <div id="botoesSE" style="display:none;">
+        <div id="botoesSE">
             <b>SE:</b>
         </div>
 
-        <div id="botoesALIM" style="display:none;">
+        <div id="botoesALIM">
             <b>Alimentador:</b>
         </div>
     </div>
-
-<div class="grafico-container">
-    <div class="grafico-metricas">
-
-        <!-- GRUPO ESQUERDA -->
-        <div class="grupo-esquerda">
-            <div class="metrica-item metrica-inspetor">
-                <span class="metrica-numero" id="metricaInspetor">0</span>
-                <div class="metrica-barra" style="height: 18px;"></div>
-                <span class="metrica-label">Enviar<br>Inspetor</span>
-            </div>
-
-            <div class="metrica-item metrica-reprogramar">
-                <span class="metrica-numero" id="metricaReprogramar">0</span>
-                <div class="metrica-barra" style="height: 25px;"></div>
-                <span class="metrica-label">Reprogramar</span>
-            </div>
-
-            <div class="metrica-item metrica-realizado">
-                <span class="metrica-numero" id="metricaRealizado">0</span>
-                <div class="metrica-barra" style="height: 55px;"></div>
-                <span class="metrica-label">Realizados</span>
-            </div>
-
-            <div class="metrica-item metrica-nao-realizado">
-                <span class="metrica-numero" id="metricaNaoRealizado">0</span>
-                <div class="metrica-barra" style="height: 30px;"></div>
-                <span class="metrica-label">Não<br>Realizados</span>
-            </div>
-        </div>
-
-        <!-- GRUPO DIREITA -->
-        <div class="grupo-direita">
-            <div class="metrica-item metrica-criada">
-                <span class="metrica-numero" id="metricaCriada">0</span>
-                <div class="metrica-barra" style="height: 65px;"></div>
-                <span class="metrica-label">DTs<br>Criadas</span>
-            </div>
-
-            <div class="metrica-item metrica-pendente">
-                <span class="metrica-numero" id="metricaPendente">0</span>
-                <div class="metrica-barra" style="height: 45px;"></div>
-                <span class="metrica-label">Pendentes</span>
-            </div>
-
-            <div class="metrica-item metrica-total">
-                <span class="metrica-numero" id="metricaTotal">0</span>
-                <div class="metrica-barra" style="height: 80px;"></div>
-                <span class="metrica-label">Total<br>Filtrado</span>
-            </div>
-        </div>
-
-    </div>
 </div>
+
+
 
 
 <div class="table-wrapper">
@@ -716,16 +644,16 @@
                 <th onclick="ordenarTabela(0, this)">RANKING</th>
                 <th onclick="ordenarTabela(1, this)">TIPO</th>
                 <th onclick="ordenarTabela(2, this)">EQUIPAMENTO</th>
-                <th onclick="ordenarTabela(3, this)">QTD.</th>
+                <th onclick="ordenarTabela(3, this)">REITERADAS</th>
                 <th onclick="ordenarTabela(4, this)">SE</th>
-                <th onclick="ordenarTabela(5, this)">ALIM:</th>
+                <th onclick="ordenarTabela(5, this)">ALIMENTADOR</th>
                 <th onclick="ordenarTabela(6, this)">BASE</th>
                 <th onclick="ordenarTabela(7, this)">CHI</th>
                 <th onclick="ordenarTabela(8, this)">DATA</th>
-                <th onclick="ordenarTabela(9, this)">GPS</th>
+                <th onclick="ordenarTabela(9, this)">ENDEREÇO</th>
                 <th onclick="ordenarTabela(10, this)">DT / INC</th>
-                <th onclick="ordenarTabela(11, this)">OBS:</th>
-                <th onclick="ordenarTabela(12, this)">LEAD</th>
+                <th onclick="ordenarTabela(11, this)">OBSERVAÇÃO</th>
+                <th onclick="ordenarTabela(12, this)">LEAD DA EQUIPE</th>
                 <th onclick="ordenarTabela(13, this)">RETORNO</th>
                 <th onclick="ordenarTabela(14, this)">AÇÃO</th>
                 <th onclick="ordenarTabela(15, this)">STATUS</th>
@@ -735,7 +663,40 @@
         <tbody></tbody>
     </table>
 </div>
-
+    
+<!-- GRÁFICO DE CONTAGEM -->
+    <div class="grafico-container">
+        <div class="grafico-metricas">
+            <div class="metrica-item metrica-total">
+                <span class="metrica-numero" id="metricaTotal">0</span>
+                <span class="metrica-label">Total Filtrado</span>
+            </div>
+            <div class="metrica-item metrica-pendente">
+                <span class="metrica-numero" id="metricaPendente">0</span>
+                <span class="metrica-label">Pendentes</span>
+            </div>
+            <div class="metrica-item metrica-criada">
+                <span class="metrica-numero" id="metricaCriada">0</span>
+                <span class="metrica-label">DT Criadas</span>
+            </div>
+            <div class="metrica-item metrica-realizado">
+                <span class="metrica-numero" id="metricaRealizado">0</span>
+                <span class="metrica-label">Realizados</span>
+            </div>
+            <div class="metrica-item metrica-nao-realizado">
+                <span class="metrica-numero" id="metricaNaoRealizado">0</span>
+                <span class="metrica-label">Não Realizados</span>
+            </div>
+            <div class="metrica-item metrica-reprogramar">
+                <span class="metrica-numero" id="metricaReprogramar">0</span>
+                <span class="metrica-label">Reprogramar</span>
+            </div>
+            <div class="metrica-item metrica-inspetor">
+                <span class="metrica-numero" id="metricaInspetor">0</span>
+                <span class="metrica-label">Enviar Inspetor</span>
+            </div>
+        </div>
+    </div>    
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 // VARIÁVEIS GLOBAIS
@@ -876,8 +837,8 @@ function restaurarSessao(sessao) {
         }
 
         const botaoTexto = item.gerado ? 'DT Criada' : 'Criar DT';
-        const statusTexto = item.statusTexto || 'Não Realizado';
-        const statusClasse = item.statusClasse || 'nao-realizado';
+        const statusTexto = item.statusTexto || 'Pendente';
+        const statusClasse = item.statusClasse || 'pendente';
 
         const codigoVal = (item.codigo && item.codigo !== 'undefined') ? item.codigo : '';
         const obsVal = (item.obs && item.obs !== 'undefined') ? item.obs : '';
@@ -886,9 +847,9 @@ function restaurarSessao(sessao) {
 
         tr.innerHTML = htmlColunas + `
             <td data-endereco="${enderecoOriginal}">${enderecoHTML}</td>
-            <td><input maxlength="10" class="codigo" placeholder="Ex: INSERIR" value="${codigoVal}" oninput="salvarSessaoAutomatica()"></td>
+            <td><input maxlength="10" class="codigo" placeholder="XXXXXXXXX" value="${codigoVal}" oninput="salvarSessaoAutomatica()"></td>
             <td><input class="obs" placeholder="..." value="${obsVal}" readonly onclick="abrirPopup(this, 'Observação')"></td>
-            <td><input class="lead" placeholder="" value="${leadVal}" oninput="salvarSessaoAutomatica()"></td>
+            <td><input class="lead" placeholder="" value="${leadVal}" oninput="aplicarMascaraLead(this)" oninput="salvarSessaoAutomatica()"></td>
             <td><input class="retorno" placeholder="..." value="${retornoVal}" readonly onclick="abrirPopup(this, 'Retorno')"></td>
             <td><button onclick="gerarMensagem(this)" ${item.gerado ? 'class="gerado"' : ''}>${botaoTexto}</button></td>
             <td><button class="${statusClasse}" onclick="toggleStatus(this)">${statusTexto}</button></td>
@@ -947,9 +908,9 @@ function resetarLinha(botaoReset) {
     botaoGerar.classList.remove('gerado');
     botaoGerar.innerText = 'Criar DT';
     
-    botaoStatus.classList.remove('realizado');
-    botaoStatus.classList.add('nao-realizado');
-    botaoStatus.innerText = 'Não Realizado';
+    botaoStatus.classList.remove('realizado', 'nao-realizado', 'reprogramar', 'enviar-inspetor');
+    botaoStatus.classList.add('pendente');
+    botaoStatus.innerText = 'Pendente';
     
     salvarSessaoAutomatica();
     atualizarGrafico();
@@ -957,23 +918,27 @@ function resetarLinha(botaoReset) {
 
 // TOGGLE STATUS (4 ESTADOS ROTATIVOS)
 function toggleStatus(botao) {
-    // Estados: Não Realizado → Realizado → Reprogramar → Enviar Inspetor → Não Realizado
-    if (botao.classList.contains('nao-realizado')) {
-        botao.classList.remove('nao-realizado');
+    // Estados: Pendente → Realizado → Não Realizado → Reprogramar → Enviar Inspetor → Pendente
+    if (botao.classList.contains('pendente')) {
+        botao.classList.remove('pendente');
         botao.classList.add('realizado');
         botao.innerText = 'Realizado';
     } else if (botao.classList.contains('realizado')) {
         botao.classList.remove('realizado');
+        botao.classList.add('nao-realizado');
+        botao.innerText = 'Não Realizado';
+    } else if (botao.classList.contains('nao-realizado')) {
+        botao.classList.remove('nao-realizado');
         botao.classList.add('reprogramar');
         botao.innerText = 'Reprogramar';
     } else if (botao.classList.contains('reprogramar')) {
         botao.classList.remove('reprogramar');
         botao.classList.add('enviar-inspetor');
         botao.innerText = 'Enviar Inspetor';
-    } else if (botao.classList.contains('enviar-inspetor')) {
+    } else {
         botao.classList.remove('enviar-inspetor');
-        botao.classList.add('nao-realizado');
-        botao.innerText = 'Não Realizado';
+        botao.classList.add('pendente');
+        botao.innerText = 'Pendente';
     }
     salvarSessaoAutomatica();
     verificarBotaoRota();
@@ -1010,14 +975,11 @@ function atualizarGrafico() {
             if (botaoStatus) {
                 if (botaoStatus.classList.contains('realizado')) {
                     realizado++;
-                }
-                if (botaoStatus.classList.contains('reprogramar')) {
+                } else if (botaoStatus.classList.contains('reprogramar')) {
                     reprogramar++;
-                }
-                if (botaoStatus.classList.contains('enviar-inspetor')) {
+                } else if (botaoStatus.classList.contains('enviar-inspetor')) {
                     inspetor++;
-                }
-                if (botaoStatus.classList.contains('nao-realizado')) {
+                } else {
                     naoRealizado++;
                 }
             }
@@ -1031,14 +993,6 @@ function atualizarGrafico() {
     document.getElementById('metricaNaoRealizado').textContent = naoRealizado;
     document.getElementById('metricaReprogramar').textContent = reprogramar;
     document.getElementById('metricaInspetor').textContent = inspetor;
-    atualizarAlturaBarras(total, {
-    pendente,
-    criada,
-    realizado,
-    naoRealizado,
-    reprogramar,
-    inspetor
-    });
 }
 
 // Destacar TH selecionado
@@ -1210,6 +1164,8 @@ function atualizarBotoesBASE() {
             seSelecionado = null;
             alimentadorSelecionado = null;
             atualizarBotoesBASE();
+            atualizarBotoesSE();
+            atualizarBotoesALIM();
             aplicarFiltros();
             atualizarGrafico();
         };
@@ -1225,6 +1181,9 @@ function atualizarBotoesBASE() {
     });
 
     Object.keys(contagemBase).sort().forEach(base => {
+        // Ocultar botão #N/D
+        if (base === "#N/D" || base === "#ND" || base.toUpperCase() === "#N/D") return;
+        
         let btn = document.createElement("button");
         btn.innerText = `${base} (${contagemBase[base]})`;
         btn.onclick = () => {
@@ -1233,6 +1192,7 @@ function atualizarBotoesBASE() {
             alimentadorSelecionado = null;
             atualizarBotoesBASE();
             atualizarBotoesSE();
+            atualizarBotoesALIM();
             aplicarFiltros();
         };
         if (baseSelecionada === base) btn.classList.add('ativo');
@@ -1242,11 +1202,7 @@ function atualizarBotoesBASE() {
     divBASE.appendChild(containerBotoes);
 
     if (baseSelecionada) {
-        divSE.style.display = 'flex';
         atualizarBotoesSE();
-    } else {
-        divSE.style.display = 'none';
-        divALIM.style.display = 'none';
     }
 }
 
@@ -1260,6 +1216,12 @@ function atualizarBotoesSE() {
     let containerBotoes = document.createElement('div');
     containerBotoes.className = 'botoes-container';
     
+    // Se não há base selecionada, apenas mostra a caixa vazia
+    if (!baseSelecionada) {
+        divSE.appendChild(containerBotoes);
+        return;
+    }
+    
     if (seSelecionado) {
         let btnLimpar = document.createElement("button");
         btnLimpar.innerText = "✖";
@@ -1269,6 +1231,7 @@ function atualizarBotoesSE() {
             seSelecionado = null;
             alimentadorSelecionado = null;
             atualizarBotoesSE();
+            atualizarBotoesALIM();
             aplicarFiltros();
         };
         divSE.appendChild(btnLimpar);
@@ -1302,10 +1265,7 @@ function atualizarBotoesSE() {
     divSE.appendChild(containerBotoes);
 
     if (seSelecionado) {
-        divALIM.style.display = 'flex';
         atualizarBotoesALIM();
-    } else {
-        divALIM.style.display = 'none';
     }
 }
 
@@ -1316,6 +1276,12 @@ function atualizarBotoesALIM() {
     
     let containerBotoes = document.createElement('div');
     containerBotoes.className = 'botoes-container';
+    
+    // Se não há SE selecionada, apenas mostra a caixa vazia
+    if (!seSelecionado) {
+        divALIM.appendChild(containerBotoes);
+        return;
+    }
     
     if (alimentadorSelecionado) {
         let btnLimpar = document.createElement("button");
@@ -1523,7 +1489,7 @@ function preencherTabela(dados) {
             <td><input class="lead" placeholder="" oninput="salvarSessaoAutomatica()"></td>
             <td><input class="retorno" placeholder="..." readonly onclick="abrirPopup(this, 'Retorno')"></td>
             <td><button onclick="gerarMensagem(this)">Criar DT</button></td>
-            <td><button class="nao-realizado" onclick="toggleStatus(this)">Não Realizado</button></td>
+            <td><button class="pendente" onclick="toggleStatus(this)">Pendente</button></td>
             <td><button class="reset-btn" onclick="resetarLinha(this)">↺</button></td>
         `;
 
@@ -1533,27 +1499,15 @@ function preencherTabela(dados) {
     atualizarBotoesBASE();
     aplicarFiltros();
 }
-function atualizarAlturaBarras(total, valores) {
-    const ALTURA_MAX = 70;
-
-    // TOTAL
-    const barraTotal = document.querySelector(".metrica-total .metrica-barra");
-    barraTotal.style.height = total > 0 ? ALTURA_MAX + "px" : "0px";
-
-    Object.entries(valores).forEach(([tipo, valor]) => {
-        const barra = document.querySelector(`.metrica-${tipo} .metrica-barra`);
-        if (!barra) return;
-
-        if (total > 0 && valor > 0) {
-            const altura = (valor / total) * ALTURA_MAX;
-
-            // 🔹 garante pelo menos 2px para valores mínimos
-            barra.style.height = Math.max(altura, 2) + "px";
-        } else {
-            barra.style.height = "0px"; // 🔥 só zero zera
-        }
-    });
-}
+    function aplicarMascaraLead(i) { 
+        let v = i.value.toUpperCase().replace(/[^A-Z0-9]/g, ''), r = ''; 
+        for (let x = 0; x < v.length && x < 8; x++) { 
+            if (x === 3 || x === 5) r += '-'; 
+            r += v[x]; 
+        } 
+        i.value = r; 
+    }    
 </script>
+
 </body>
 </html>
