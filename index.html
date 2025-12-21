@@ -344,6 +344,16 @@
         border-radius: 6px;
         text-align: center;
         border: 2px solid #ddd;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    .metrica-item:hover {
+    transform: translateY(-2px);
+    }
+    .metrica-item.ativo {
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    transform: scale(1.05);
+    border-width: 3px;
     }
 
     .metrica-numero {
@@ -844,6 +854,67 @@
         backdrop-filter: blur(4px);
         z-index: 10499;
     }
+    .btn-limpar-status {
+    margin: 2px;
+    padding: 6px 10px;
+    border: none;
+    background-color: #FF9800;
+    color: #fff;
+    border-radius: 18px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: bold;
+    box-shadow: 0 4px 0 rgba(0,0,0,0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-limpar-status:hover {
+        background-color: #F57C00;
+        transform: scale(1.02);
+    }
+    .btn-data-dt {
+        width: 100%;
+        padding: 4px 6px;
+        font-size: 12px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        background: #f2f2f2;
+        cursor: default;
+    }
+
+    /* Quando TEM data */
+    .btn-data-dt.ativa {
+        background: #e6f4ea;
+        border-color: #3aa655;
+        color: #000200;
+        font-weight: bold;
+        width: 125px;
+        margin: 1px;
+        padding: 7px 8px;
+        border: none;
+        background-color: #444;
+        color: #fff;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        box-shadow: 0 4px 0 rgba(0,0,0,0.1);
+        transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+    /* Quando NÃO tem data */
+    .btn-data-dt.inativa {
+        background: #f5f5f5;
+        color: #999;
+        border-color: #ddd;
+        cursor: not-allowed;
+        width: 125px;
+        margin: 1px;
+        padding: 7px 8px;
+        border-radius: 6px;
+        box-shadow: 0 4px 0 rgba(0,0,0,0.1);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
 </style>
 </head>
 <body>
@@ -881,6 +952,7 @@
         <button class="btn-exportar" onclick="exportarSessao()">💾 Exportar</button>
         <button class="btn-importar" onclick="document.getElementById('importarSessao').click()">⏏️ Importar</button>
         <button class="btn-limpar-filtros" onclick="limparFiltros()">❌ Limpar Filtros</button>
+        <button class="btn-limpar-status" id="btnLimparStatus" onclick="limparFiltroStatus()" style="display:none;">✖ Limpar Status</button>
         <input type="file" id="importarSessao" accept=".json" style="display:none;" onchange="importarSessao(this)">
     </div>
     <div class="acoes-direita">
@@ -928,6 +1000,7 @@
                 <th onclick="ordenarTabela(12, this)">LEAD DA EQUIPE</th>
                 <th onclick="ordenarTabela(13, this)">RETORNO</th>
                 <th onclick="ordenarTabela(14, this)">AÇÃO</th>
+                <th onclick="ordenarTabela(16, this)">DATA</th>
                 <th onclick="ordenarTabela(15, this)">STATUS</th>
                 <th>RESET</th>
             </tr>
@@ -937,38 +1010,36 @@
 </div>
     
 <!-- GRÁFICO DE CONTAGEM -->
-    <div class="grafico-container">
-        <div class="grafico-metricas">
-            <div class="metrica-item metrica-total">
-                <span class="metrica-numero" id="metricaTotal">0</span>
-                <span class="metrica-label">Total Filtrado</span>
-            </div>
-            <div class="metrica-item metrica-pendente">
-                <span class="metrica-numero" id="metricaPendente">0</span>
-                <span class="metrica-label">Pendentes</span>
-            </div>
-            <div class="metrica-item metrica-criada">
-                <span class="metrica-numero" id="metricaCriada">0</span>
-                <span class="metrica-label">DT Criadas</span>
-            </div>
-            <div class="metrica-item metrica-realizado">
-                <span class="metrica-numero" id="metricaRealizado">0</span>
-                <span class="metrica-label">Realizados</span>
-            </div>
-            <div class="metrica-item metrica-nao-realizado">
-                <span class="metrica-numero" id="metricaNaoRealizado">0</span>
-                <span class="metrica-label">Não Realizados</span>
-            </div>
-            <div class="metrica-item metrica-reprogramar">
-                <span class="metrica-numero" id="metricaReprogramar">0</span>
-                <span class="metrica-label">Reprogramar</span>
-            </div>
-            <div class="metrica-item metrica-inspetor">
-                <span class="metrica-numero" id="metricaInspetor">0</span>
-                <span class="metrica-label">Enviar Inspetor</span>
-            </div>
-        </div>
-    </div>    
+<div class="grafico-metricas">
+    <div class="metrica-item metrica-total" onclick="filtrarPorStatus('total')">
+        <span class="metrica-numero" id="metricaTotal">0</span>
+        <span class="metrica-label">Total Filtrado</span>
+    </div>
+    <div class="metrica-item metrica-pendente" onclick="filtrarPorStatus('pendente')">
+        <span class="metrica-numero" id="metricaPendente">0</span>
+        <span class="metrica-label">Pendentes</span>
+    </div>
+    <div class="metrica-item metrica-criada" onclick="filtrarPorStatus('criada')">
+        <span class="metrica-numero" id="metricaCriada">0</span>
+        <span class="metrica-label">DT Criadas</span>
+    </div>
+    <div class="metrica-item metrica-realizado" onclick="filtrarPorStatus('realizado')">
+        <span class="metrica-numero" id="metricaRealizado">0</span>
+        <span class="metrica-label">Realizados</span>
+    </div>
+    <div class="metrica-item metrica-nao-realizado" onclick="filtrarPorStatus('nao-realizado')">
+        <span class="metrica-numero" id="metricaNaoRealizado">0</span>
+        <span class="metrica-label">Não Realizados</span>
+    </div>
+    <div class="metrica-item metrica-reprogramar" onclick="filtrarPorStatus('reprogramar')">
+        <span class="metrica-numero" id="metricaReprogramar">0</span>
+        <span class="metrica-label">Reprogramar</span>
+    </div>
+    <div class="metrica-item metrica-inspetor" onclick="filtrarPorStatus('inspetor')">
+        <span class="metrica-numero" id="metricaInspetor">0</span>
+        <span class="metrica-label">Enviar Inspetor</span>
+    </div>
+</div>    
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 // VARIÁVEIS GLOBAIS
@@ -979,6 +1050,7 @@ let dadosOriginais = [];
 let baseSelecionada = null;
 let seSelecionado = null;
 let alimentadorSelecionado = null;
+let statusSelecionado = null;
 let inputAtualPopup = null;
 
 // FUNÇÃO TALKBACK POPUP
@@ -1526,9 +1598,10 @@ function capturarEstadoSessao() {
         retorno: cols[13].querySelector('input')?.value || '',
         marcado: linha.classList.contains('marcado'),
         gerado: cols[14].querySelector('button')?.classList.contains('gerado') || false,
-        statusClasse: cols[15].querySelector('button')?.className || 'nao-realizado',  // ← ADICIONE
-        statusTexto: cols[15].querySelector('button')?.innerText || 'Não Realizado'    // ← ADICIONE
-       };
+        dataCriacaoDT: cols[15]?.innerText || '-',  // DATA é 15 agora
+        statusClasse: cols[16].querySelector('button')?.className || 'nao-realizado',  // STATUS é 16
+        statusTexto: cols[16].querySelector('button')?.innerText || 'Não Realizado'
+    };
    });
 
     return {
@@ -1538,7 +1611,8 @@ function capturarEstadoSessao() {
         filtros: {
             base: baseSelecionada,
             se: seSelecionado,
-            alimentador: alimentadorSelecionado
+            alimentador: alimentadorSelecionado,
+            status: statusSelecionado
         }
     };
 }
@@ -1610,17 +1684,29 @@ function restaurarSessao(sessao) {
         const obsVal = (item.obs && item.obs !== 'undefined') ? item.obs : '';
         const leadVal = (item.lead && item.lead !== 'undefined') ? item.lead : '';
         const retornoVal = (item.retorno && item.retorno !== 'undefined') ? item.retorno : '';
+        const htmlDataCriacaoDT = `
+        <td data-sort="${item.dataCriacaoDTISO || ''}">
+            <button 
+                class="btn-data-dt ${item.dataCriacaoDT && item.dataCriacaoDT !== '-' ? 'ativa' : 'inativa'}"
+                ${item.dataCriacaoDT && item.dataCriacaoDT !== '-' ? '' : 'disabled'}
+            >
+                ${item.dataCriacaoDT || '-'}
+            </button>
+        </td>`;
 
         tr.innerHTML = htmlColunas + `
-            <td data-endereco="${enderecoOriginal}">${enderecoHTML}</td>
-            <td><input maxlength="10" class="codigo" placeholder="XXXXXXXXX" value="${codigoVal}" oninput="salvarSessaoAutomatica()"></td>
-            <td><input class="obs" placeholder="..." value="${obsVal}" readonly onclick="abrirPopup(this, 'Observação')"></td>
-            <td><input class="lead" placeholder="" value="${leadVal}" oninput="aplicarMascaraLead(this)" oninput="salvarSessaoAutomatica()"></td>
-            <td><input class="retorno" placeholder="..." value="${retornoVal}" readonly onclick="abrirPopup(this, 'Retorno')"></td>
-            <td><button onclick="gerarMensagem(this)" ${item.gerado ? 'class="gerado"' : ''}>${botaoTexto}</button></td>
-            <td><button class="${statusClasse}" onclick="toggleStatus(this)">${statusTexto}</button></td>
-            <td><button class="reset-btn" onclick="resetarLinha(this)">↺</button></td>
-        `;
+        <td data-endereco="${enderecoOriginal}">${enderecoHTML}</td>
+        <td><input maxlength="10" class="codigo" placeholder="XXXXXXXXX" value="${codigoVal}" oninput="salvarSessaoAutomatica()"></td>
+        <td><input class="obs" placeholder="..." value="${obsVal}" readonly onclick="abrirPopup(this, 'Observação')"></td>
+        <td><input class="lead" placeholder="" value="${leadVal}" oninput="aplicarMascaraLead(this)" oninput="salvarSessaoAutomatica()"></td>
+        <td><input class="retorno" placeholder="..." value="${retornoVal}" readonly onclick="abrirPopup(this, 'Retorno')"></td>
+        <td><button onclick="gerarMensagem(this)" ${item.gerado ? 'class="gerado"' : ''}>${botaoTexto}</button></td>
+        
+        ${htmlDataCriacaoDT}
+        
+        <td><button class="${statusClasse}" onclick="toggleStatus(this)">${statusTexto}</button></td>
+        <td><button class="reset-btn" onclick="resetarLinha(this)">↺</button></td>
+    `;
 
         if (item.marcado) tr.classList.add('marcado');
         tbody.appendChild(tr);
@@ -1629,6 +1715,31 @@ function restaurarSessao(sessao) {
     baseSelecionada = sessao.filtros.base;
     seSelecionado = sessao.filtros.se;
     alimentadorSelecionado = sessao.filtros.alimentador;
+    
+    // RESTAURA O FILTRO DE STATUS VISUAL
+    statusSelecionado = sessao.filtros.status || null;
+
+    if (statusSelecionado) {
+        document.getElementById('btnLimparStatus').style.display = 'inline-block';
+        
+        const tipoParaClasse = {
+            'total': 'metrica-total',
+            'pendente': 'metrica-pendente',
+            'criada': 'metrica-criada',
+            'realizado': 'metrica-realizado',
+            'nao-realizado': 'metrica-nao-realizado',
+            'reprogramar': 'metrica-reprogramar',
+            'inspetor': 'metrica-inspetor'
+        };
+        
+        const classeCard = tipoParaClasse[statusSelecionado];
+        if (classeCard) {
+            const card = document.querySelector(`.${classeCard}`);  // ← CORRIGIDO AQUI!
+            if (card) {
+                card.classList.add('ativo');
+            }
+        }
+    }
     
     atualizarBotoesBASE();
     aplicarFiltros();
@@ -1654,6 +1765,11 @@ function limparFiltros() {
     baseSelecionada = null;
     seSelecionado = null;
     alimentadorSelecionado = null;
+    statusSelecionado = null;
+    document.querySelectorAll('.metrica-item').forEach(item => {
+        item.classList.remove('ativo');
+    });
+    document.getElementById('btnLimparStatus').style.display = 'none';
     
     atualizarBotoesBASE();
     aplicarFiltros();
@@ -1668,7 +1784,7 @@ function limparFiltros() {
 function resetarLinha(botaoReset) {
     const linha = botaoReset.parentNode.parentNode;
     const botaoGerar = linha.querySelector('td:nth-child(15) button');
-    const botaoStatus = linha.querySelector('td:nth-child(16) button');
+    const botaoStatus = linha.querySelector('td:nth-child(17) button'); // STATUS agora é 17
     
     linha.classList.remove('marcado');
     botaoGerar.classList.remove('gerado');
@@ -1677,6 +1793,21 @@ function resetarLinha(botaoReset) {
     botaoStatus.classList.remove('realizado', 'nao-realizado', 'reprogramar', 'enviar-inspetor');
     botaoStatus.classList.add('pendente');
     botaoStatus.innerText = 'Pendente';
+    
+    // RESETAR DATA DT (SEM APAGAR O BOTÃO)
+    const tdData = linha.children[15];
+    const btnData = tdData.querySelector('.btn-data-dt');
+
+    if (btnData) {
+        btnData.textContent = '-';
+        btnData.classList.remove('ativa');
+        btnData.classList.add('inativa');
+        btnData.disabled = true;
+    }
+
+    tdData.dataset.sort = '';
+
+
     
     salvarSessaoAutomatica();
     atualizarGrafico();
@@ -1799,6 +1930,36 @@ function formatarData(valor) {
     return valor;
 }
 
+// FILTRAR POR STATUS
+function filtrarPorStatus(tipo) {
+    // Remove ativo de todos
+    document.querySelectorAll('.metrica-item').forEach(item => {
+        item.classList.remove('ativo');
+    });
+    
+    // Se clicar no mesmo, desativa
+    if (statusSelecionado === tipo) {
+        statusSelecionado = null;
+        document.getElementById('btnLimparStatus').style.display = 'none';
+    } else {
+        statusSelecionado = tipo;
+        // Adiciona ativo no clicado
+        event.currentTarget.classList.add('ativo');
+        document.getElementById('btnLimparStatus').style.display = 'inline-block';
+    }
+    
+    aplicarFiltros();
+}
+
+// LIMPAR FILTRO DE STATUS
+function limparFiltroStatus() {
+    statusSelecionado = null;
+    document.querySelectorAll('.metrica-item').forEach(item => {
+        item.classList.remove('ativo');
+    });
+    document.getElementById('btnLimparStatus').style.display = 'none';
+    aplicarFiltros();
+}    
 // APLICAR FILTROS
 function aplicarFiltros() {
     const linhas = document.querySelectorAll("#tabelaDT tbody tr");
@@ -1811,8 +1972,29 @@ function aplicarFiltros() {
         const condBase = !baseSelecionada || base === baseSelecionada;
         const condSE = !seSelecionado || se === seSelecionado;
         const condAlim = !alimentadorSelecionado || alim === alimentadorSelecionado;
+        
+        // NOVA LÓGICA DE FILTRO POR STATUS
+        let condStatus = true;
+        if (statusSelecionado && statusSelecionado !== 'total') {
+            const botaoAcao = linha.querySelector('td:nth-child(15) button');
+            const botaoStatus = linha.querySelector('td:nth-child(17) button');
+            
+            if (statusSelecionado === 'pendente') {
+                condStatus = botaoAcao && !botaoAcao.classList.contains('gerado');
+            } else if (statusSelecionado === 'criada') {
+                condStatus = botaoAcao && botaoAcao.classList.contains('gerado');
+            } else if (statusSelecionado === 'realizado') {
+                condStatus = botaoStatus && botaoStatus.classList.contains('realizado');
+            } else if (statusSelecionado === 'nao-realizado') {
+                condStatus = botaoStatus && botaoStatus.classList.contains('nao-realizado');
+            } else if (statusSelecionado === 'reprogramar') {
+                condStatus = botaoStatus && botaoStatus.classList.contains('reprogramar');
+            } else if (statusSelecionado === 'inspetor') {
+                condStatus = botaoStatus && botaoStatus.classList.contains('enviar-inspetor');
+            }
+        }
 
-        linha.style.display = (condBase && condSE && condAlim) ? "" : "none";
+        linha.style.display = (condBase && condSE && condAlim && condStatus) ? "" : "none";
     });
 
     verificarBotaoRota();
@@ -2278,6 +2460,17 @@ function ordenarTabela(coluna, thElement) {
     visiveis.forEach(r => tbody.appendChild(r));
 }
 
+// FUNÇÃO PARA OBTER DATA ATUAL NO FORMATO BRASILEIRO
+function obterDataAtualBR() {
+    const agora = new Date();
+    const dia = String(agora.getDate()).padStart(2, '0');
+    const mes = String(agora.getMonth() + 1).padStart(2, '0');
+    const ano = agora.getFullYear();
+    const hora = String(agora.getHours()).padStart(2, '0');
+    const minuto = String(agora.getMinutes()).padStart(2, '0');
+    
+    return `${dia}/${mes}/${ano} ${hora}:${minuto}`;
+}    
 // GERAR MENSAGEM
 function gerarMensagem(botao) {
     let linha = botao.parentNode.parentNode;
@@ -2321,6 +2514,33 @@ function gerarMensagem(botao) {
 *Lead da Equipe:* ${lead}`;
 
     navigator.clipboard.writeText(msg);
+    const agora = new Date();
+
+    // data VISUAL (você já tem)
+    const dataVisual = obterDataAtualBR();
+
+    // data TÉCNICA (somente para ordenação)
+    const dataISO =
+        agora.getFullYear().toString() +
+        String(agora.getMonth() + 1).padStart(2, '0') +
+        String(agora.getDate()).padStart(2, '0') +
+        String(agora.getHours()).padStart(2, '0') +
+        String(agora.getMinutes()).padStart(2, '0');
+
+    // ADICIONA DATA DE CRIAÇÃO NA COLUNA (SEM QUEBRAR O BOTÃO)
+    const tdDataCriacao = col[15];
+    const btnData = tdDataCriacao.querySelector('.btn-data-dt');
+
+    if (btnData) {
+        btnData.textContent = dataVisual;
+        btnData.classList.remove('inativa');
+        btnData.classList.add('ativa');
+        btnData.disabled = false;
+    }
+
+    // 🔥 LINHA QUE FAZ A ORDENAÇÃO FUNCIONAR
+    tdDataCriacao.dataset.sort = dataISO;
+
 
     linha.classList.add("marcado");
     botao.classList.add("gerado");
@@ -2371,24 +2591,25 @@ function preencherTabela(dados) {
         }
 
         tr.innerHTML = `
-            <td>${item.RANKING || ""}</td>
-            <td>${item["TIPO DE EQUIPAMENTO"] || ""}</td>
-            <td>${item.EQUIPAMENTO || ""}</td>
-            <td>${item["QNTD. REITERADA"] || ""}</td>
-            <td>${item.SE || ""}</td>
-            <td>${item.ALIMENTADOR || ""}</td>
-            <td>${item.BASE || ""}</td>
-            <td>${item["CHI TOTAL"] || ""}</td>
-            <td>${formatarData(item["DT. ULTIMA OCORRÊNCIA"] || "")}</td>
-            <td data-endereco="${enderecoOriginal}">${enderecoHTML}</td>
-            <td><input maxlength="10" class="codigo" placeholder="Ex: INSERIR" oninput="salvarSessaoAutomatica()"></td>
-            <td><input class="obs" placeholder="..." readonly onclick="abrirPopup(this, 'Observação')"></td>
-            <td><input class="lead" placeholder="" oninput="salvarSessaoAutomatica()"></td>
-            <td><input class="retorno" placeholder="..." readonly onclick="abrirPopup(this, 'Retorno')"></td>
-            <td><button onclick="gerarMensagem(this)">Criar DT</button></td>
-            <td><button class="pendente" onclick="toggleStatus(this)">Pendente</button></td>
-            <td><button class="reset-btn" onclick="resetarLinha(this)">↺</button></td>
-        `;
+        <td>${item.RANKING || ""}</td>
+        <td>${item["TIPO DE EQUIPAMENTO"] || ""}</td>
+        <td>${item.EQUIPAMENTO || ""}</td>
+        <td>${item["QNTD. REITERADA"] || ""}</td>
+        <td>${item.SE || ""}</td>
+        <td>${item.ALIMENTADOR || ""}</td>
+        <td>${item.BASE || ""}</td>
+        <td>${item["CHI TOTAL"] || ""}</td>
+        <td>${formatarData(item["DT. ULTIMA OCORRÊNCIA"] || "")}</td>
+        <td data-endereco="${enderecoOriginal}">${enderecoHTML}</td>
+        <td><input maxlength="10" class="codigo" placeholder="Ex: INSERIR" oninput="salvarSessaoAutomatica()"></td>
+        <td><input class="obs" placeholder="..." readonly onclick="abrirPopup(this, 'Observação')"></td>
+        <td><input class="lead" placeholder="" oninput="salvarSessaoAutomatica()"></td>
+        <td><input class="retorno" placeholder="..." readonly onclick="abrirPopup(this, 'Retorno')"></td>
+        <td><button onclick="gerarMensagem(this)">Criar DT</button></td>
+        <td style="color: #999; font-size: 12px;">-</td>  <!-- DATA DEPOIS DE AÇÃO -->
+        <td><button class="pendente" onclick="toggleStatus(this)">Pendente</button></td>
+        <td><button class="reset-btn" onclick="resetarLinha(this)">↺</button></td>
+    `;
 
         tbody.appendChild(tr);
     });
