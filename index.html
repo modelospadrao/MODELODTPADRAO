@@ -872,49 +872,6 @@
         background-color: #F57C00;
         transform: scale(1.02);
     }
-    .btn-data-dt {
-        width: 100%;
-        padding: 4px 6px;
-        font-size: 12px;
-        border-radius: 4px;
-        border: 1px solid #ccc;
-        background: #f2f2f2;
-        cursor: default;
-    }
-
-    /* Quando TEM data */
-    .btn-data-dt.ativa {
-        background: #e6f4ea;
-        border-color: #3aa655;
-        color: #000200;
-        font-weight: bold;
-        width: 125px;
-        margin: 1px;
-        padding: 7px 8px;
-        border: none;
-        background-color: #444;
-        color: #fff;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 14px;
-        box-shadow: 0 4px 0 rgba(0,0,0,0.1);
-        transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-    /* Quando NÃO tem data */
-    .btn-data-dt.inativa {
-        background: #f5f5f5;
-        color: #999;
-        border-color: #ddd;
-        cursor: not-allowed;
-        width: 125px;
-        margin: 1px;
-        padding: 7px 8px;
-        border-radius: 6px;
-        box-shadow: 0 4px 0 rgba(0,0,0,0.1);
-        transition: transform 0.2s, box-shadow 0.2s;
-    }
-
 </style>
 </head>
 <body>
@@ -1000,7 +957,6 @@
                 <th onclick="ordenarTabela(12, this)">LEAD DA EQUIPE</th>
                 <th onclick="ordenarTabela(13, this)">RETORNO</th>
                 <th onclick="ordenarTabela(14, this)">AÇÃO</th>
-                <th onclick="ordenarTabela(16, this)">DATA</th>
                 <th onclick="ordenarTabela(15, this)">STATUS</th>
                 <th>RESET</th>
             </tr>
@@ -1598,10 +1554,9 @@ function capturarEstadoSessao() {
         retorno: cols[13].querySelector('input')?.value || '',
         marcado: linha.classList.contains('marcado'),
         gerado: cols[14].querySelector('button')?.classList.contains('gerado') || false,
-        dataCriacaoDT: cols[15]?.innerText || '-',  // DATA é 15 agora
-        statusClasse: cols[16].querySelector('button')?.className || 'nao-realizado',  // STATUS é 16
-        statusTexto: cols[16].querySelector('button')?.innerText || 'Não Realizado'
-    };
+        statusClasse: cols[15].querySelector('button')?.className || 'nao-realizado',  // ← ADICIONE
+        statusTexto: cols[15].querySelector('button')?.innerText || 'Não Realizado'    // ← ADICIONE
+       };
    });
 
     return {
@@ -1684,29 +1639,17 @@ function restaurarSessao(sessao) {
         const obsVal = (item.obs && item.obs !== 'undefined') ? item.obs : '';
         const leadVal = (item.lead && item.lead !== 'undefined') ? item.lead : '';
         const retornoVal = (item.retorno && item.retorno !== 'undefined') ? item.retorno : '';
-        const htmlDataCriacaoDT = `
-        <td data-sort="${item.dataCriacaoDTISO || ''}">
-            <button 
-                class="btn-data-dt ${item.dataCriacaoDT && item.dataCriacaoDT !== '-' ? 'ativa' : 'inativa'}"
-                ${item.dataCriacaoDT && item.dataCriacaoDT !== '-' ? '' : 'disabled'}
-            >
-                ${item.dataCriacaoDT || '-'}
-            </button>
-        </td>`;
 
         tr.innerHTML = htmlColunas + `
-        <td data-endereco="${enderecoOriginal}">${enderecoHTML}</td>
-        <td><input maxlength="10" class="codigo" placeholder="XXXXXXXXX" value="${codigoVal}" oninput="salvarSessaoAutomatica()"></td>
-        <td><input class="obs" placeholder="..." value="${obsVal}" readonly onclick="abrirPopup(this, 'Observação')"></td>
-        <td><input class="lead" placeholder="" value="${leadVal}" oninput="aplicarMascaraLead(this)" oninput="salvarSessaoAutomatica()"></td>
-        <td><input class="retorno" placeholder="..." value="${retornoVal}" readonly onclick="abrirPopup(this, 'Retorno')"></td>
-        <td><button onclick="gerarMensagem(this)" ${item.gerado ? 'class="gerado"' : ''}>${botaoTexto}</button></td>
-        
-        ${htmlDataCriacaoDT}
-        
-        <td><button class="${statusClasse}" onclick="toggleStatus(this)">${statusTexto}</button></td>
-        <td><button class="reset-btn" onclick="resetarLinha(this)">↺</button></td>
-    `;
+            <td data-endereco="${enderecoOriginal}">${enderecoHTML}</td>
+            <td><input maxlength="10" class="codigo" placeholder="XXXXXXXXX" value="${codigoVal}" oninput="salvarSessaoAutomatica()"></td>
+            <td><input class="obs" placeholder="..." value="${obsVal}" readonly onclick="abrirPopup(this, 'Observação')"></td>
+            <td><input class="lead" placeholder="" value="${leadVal}" oninput="aplicarMascaraLead(this)" oninput="salvarSessaoAutomatica()"></td>
+            <td><input class="retorno" placeholder="..." value="${retornoVal}" readonly onclick="abrirPopup(this, 'Retorno')"></td>
+            <td><button onclick="gerarMensagem(this)" ${item.gerado ? 'class="gerado"' : ''}>${botaoTexto}</button></td>
+            <td><button class="${statusClasse}" onclick="toggleStatus(this)">${statusTexto}</button></td>
+            <td><button class="reset-btn" onclick="resetarLinha(this)">↺</button></td>
+        `;
 
         if (item.marcado) tr.classList.add('marcado');
         tbody.appendChild(tr);
@@ -1784,7 +1727,7 @@ function limparFiltros() {
 function resetarLinha(botaoReset) {
     const linha = botaoReset.parentNode.parentNode;
     const botaoGerar = linha.querySelector('td:nth-child(15) button');
-    const botaoStatus = linha.querySelector('td:nth-child(17) button'); // STATUS agora é 17
+    const botaoStatus = linha.querySelector('td:nth-child(16) button');
     
     linha.classList.remove('marcado');
     botaoGerar.classList.remove('gerado');
@@ -1793,21 +1736,6 @@ function resetarLinha(botaoReset) {
     botaoStatus.classList.remove('realizado', 'nao-realizado', 'reprogramar', 'enviar-inspetor');
     botaoStatus.classList.add('pendente');
     botaoStatus.innerText = 'Pendente';
-    
-    // RESETAR DATA DT (SEM APAGAR O BOTÃO)
-    const tdData = linha.children[15];
-    const btnData = tdData.querySelector('.btn-data-dt');
-
-    if (btnData) {
-        btnData.textContent = '-';
-        btnData.classList.remove('ativa');
-        btnData.classList.add('inativa');
-        btnData.disabled = true;
-    }
-
-    tdData.dataset.sort = '';
-
-
     
     salvarSessaoAutomatica();
     atualizarGrafico();
@@ -1977,7 +1905,7 @@ function aplicarFiltros() {
         let condStatus = true;
         if (statusSelecionado && statusSelecionado !== 'total') {
             const botaoAcao = linha.querySelector('td:nth-child(15) button');
-            const botaoStatus = linha.querySelector('td:nth-child(17) button');
+            const botaoStatus = linha.querySelector('td:nth-child(16) button');
             
             if (statusSelecionado === 'pendente') {
                 condStatus = botaoAcao && !botaoAcao.classList.contains('gerado');
@@ -2460,17 +2388,6 @@ function ordenarTabela(coluna, thElement) {
     visiveis.forEach(r => tbody.appendChild(r));
 }
 
-// FUNÇÃO PARA OBTER DATA ATUAL NO FORMATO BRASILEIRO
-function obterDataAtualBR() {
-    const agora = new Date();
-    const dia = String(agora.getDate()).padStart(2, '0');
-    const mes = String(agora.getMonth() + 1).padStart(2, '0');
-    const ano = agora.getFullYear();
-    const hora = String(agora.getHours()).padStart(2, '0');
-    const minuto = String(agora.getMinutes()).padStart(2, '0');
-    
-    return `${dia}/${mes}/${ano} ${hora}:${minuto}`;
-}    
 // GERAR MENSAGEM
 function gerarMensagem(botao) {
     let linha = botao.parentNode.parentNode;
@@ -2514,33 +2431,6 @@ function gerarMensagem(botao) {
 *Lead da Equipe:* ${lead}`;
 
     navigator.clipboard.writeText(msg);
-    const agora = new Date();
-
-    // data VISUAL (você já tem)
-    const dataVisual = obterDataAtualBR();
-
-    // data TÉCNICA (somente para ordenação)
-    const dataISO =
-        agora.getFullYear().toString() +
-        String(agora.getMonth() + 1).padStart(2, '0') +
-        String(agora.getDate()).padStart(2, '0') +
-        String(agora.getHours()).padStart(2, '0') +
-        String(agora.getMinutes()).padStart(2, '0');
-
-    // ADICIONA DATA DE CRIAÇÃO NA COLUNA (SEM QUEBRAR O BOTÃO)
-    const tdDataCriacao = col[15];
-    const btnData = tdDataCriacao.querySelector('.btn-data-dt');
-
-    if (btnData) {
-        btnData.textContent = dataVisual;
-        btnData.classList.remove('inativa');
-        btnData.classList.add('ativa');
-        btnData.disabled = false;
-    }
-
-    // 🔥 LINHA QUE FAZ A ORDENAÇÃO FUNCIONAR
-    tdDataCriacao.dataset.sort = dataISO;
-
 
     linha.classList.add("marcado");
     botao.classList.add("gerado");
@@ -2591,25 +2481,24 @@ function preencherTabela(dados) {
         }
 
         tr.innerHTML = `
-        <td>${item.RANKING || ""}</td>
-        <td>${item["TIPO DE EQUIPAMENTO"] || ""}</td>
-        <td>${item.EQUIPAMENTO || ""}</td>
-        <td>${item["QNTD. REITERADA"] || ""}</td>
-        <td>${item.SE || ""}</td>
-        <td>${item.ALIMENTADOR || ""}</td>
-        <td>${item.BASE || ""}</td>
-        <td>${item["CHI TOTAL"] || ""}</td>
-        <td>${formatarData(item["DT. ULTIMA OCORRÊNCIA"] || "")}</td>
-        <td data-endereco="${enderecoOriginal}">${enderecoHTML}</td>
-        <td><input maxlength="10" class="codigo" placeholder="Ex: INSERIR" oninput="salvarSessaoAutomatica()"></td>
-        <td><input class="obs" placeholder="..." readonly onclick="abrirPopup(this, 'Observação')"></td>
-        <td><input class="lead" placeholder="" oninput="salvarSessaoAutomatica()"></td>
-        <td><input class="retorno" placeholder="..." readonly onclick="abrirPopup(this, 'Retorno')"></td>
-        <td><button onclick="gerarMensagem(this)">Criar DT</button></td>
-        <td style="color: #999; font-size: 12px;">-</td>  <!-- DATA DEPOIS DE AÇÃO -->
-        <td><button class="pendente" onclick="toggleStatus(this)">Pendente</button></td>
-        <td><button class="reset-btn" onclick="resetarLinha(this)">↺</button></td>
-    `;
+            <td>${item.RANKING || ""}</td>
+            <td>${item["TIPO DE EQUIPAMENTO"] || ""}</td>
+            <td>${item.EQUIPAMENTO || ""}</td>
+            <td>${item["QNTD. REITERADA"] || ""}</td>
+            <td>${item.SE || ""}</td>
+            <td>${item.ALIMENTADOR || ""}</td>
+            <td>${item.BASE || ""}</td>
+            <td>${item["CHI TOTAL"] || ""}</td>
+            <td>${formatarData(item["DT. ULTIMA OCORRÊNCIA"] || "")}</td>
+            <td data-endereco="${enderecoOriginal}">${enderecoHTML}</td>
+            <td><input maxlength="10" class="codigo" placeholder="Ex: INSERIR" oninput="salvarSessaoAutomatica()"></td>
+            <td><input class="obs" placeholder="..." readonly onclick="abrirPopup(this, 'Observação')"></td>
+            <td><input class="lead" placeholder="" oninput="salvarSessaoAutomatica()"></td>
+            <td><input class="retorno" placeholder="..." readonly onclick="abrirPopup(this, 'Retorno')"></td>
+            <td><button onclick="gerarMensagem(this)">Criar DT</button></td>
+            <td><button class="pendente" onclick="toggleStatus(this)">Pendente</button></td>
+            <td><button class="reset-btn" onclick="resetarLinha(this)">↺</button></td>
+        `;
 
         tbody.appendChild(tr);
     });
